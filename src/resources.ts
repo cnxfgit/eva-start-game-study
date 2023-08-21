@@ -1,82 +1,67 @@
 import { RESOURCE_TYPE } from '@eva/eva.js';
 export default [
   {
-    name: 'basketball',
+    name: 'ctrl1',
     type: RESOURCE_TYPE.IMAGE,
     src: {
       image: {
         type: 'png',
-        url: './static/TB1WF1R0Ez1gK0jSZLeXXb9kVXa-99-99.png',
+        url: './static/assets/rawImages/ctrl/ctrl (1).png',
       },
     },
     preload: true,
   },
   {
-    name: 'backboard',
+    name: 'ctrl2',
     type: RESOURCE_TYPE.IMAGE,
     src: {
       image: {
         type: 'png',
-        url:
-          './static/TB1a11YoRFR4u4jSZFPXXanzFXa-109-263.png',
+        url: './static/assets/rawImages/ctrl/ctrl (2).png',
       },
     },
     preload: true,
   },
   {
-    name: 'bg',
+    name: 'ctrl3',
     type: RESOURCE_TYPE.IMAGE,
     src: {
       image: {
         type: 'png',
-        url:
-          './static/TB15Upxqk9l0K4jSZFKXXXFjpXa-750-1624.jpg',
+        url: './static/assets/rawImages/ctrl/ctrl (3).png',
       },
     },
     preload: true,
   },
   {
-    name: 'basketBack',
+    name: 'ctrl4',
     type: RESOURCE_TYPE.IMAGE,
     src: {
       image: {
         type: 'png',
-        url:
-          './static/TB1Xerd0AY2gK0jSZFgXXc5OFXa-184-175.png',
+        url: './static/assets/rawImages/ctrl/ctrl (4).png',
       },
     },
     preload: true,
   },
   {
-    name: 'boardIdle',
-    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    name: 'ctrl5',
+    type: RESOURCE_TYPE.IMAGE,
     src: {
       image: {
         type: 'png',
-        url:
-          './static/TB1LYwonSR26e4jSZFEXXbwuXXa-920-875.png',
-      },
-      json: {
-        type: 'json',
-        url:
-          './static/3246284841596d87b60749e88e0e26cd.json',
+        url: './static/assets/rawImages/ctrl/ctrl (5).png',
       },
     },
     preload: true,
   },
   {
-    name: 'boardGoal',
-    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    name: 'ctrl6',
+    type: RESOURCE_TYPE.IMAGE,
     src: {
       image: {
         type: 'png',
-        url:
-          './static/TB1ob_c0EY1gK0jSZFCXXcwqXXa-552-525.png',
-      },
-      json: {
-        type: 'json',
-        url:
-          './static/dfefdd86474cded44bdc226549ae6d81.json',
+        url: './static/assets/rawImages/ctrl/ctrl (6).png',
       },
     },
     preload: true,

@@ -1,8 +1,3 @@
-import createBackground from './gameObjects/background';
-import createBasketFront from './gameObjects/board/basketFront';
-import createBoard from './gameObjects/board/board';
-import createBall from './gameObjects/ball';
-import createBtn from './gameObjects/btn';
 import resources from './resources';
 
 import { Game, resource } from '@eva/eva.js';
@@ -14,6 +9,10 @@ import { RenderSystem } from '@eva/plugin-renderer-render';
 import { TransitionSystem } from '@eva/plugin-transition';
 import { GraphicsSystem } from '@eva/plugin-renderer-graphics';
 import { TextSystem } from '@eva/plugin-renderer-text';
+import BattleScene from './Scenes/Battle';
+
+export const SCREEN_WIDTH = window.innerWidth;
+export const SCREEN_HEIGHT = window.innerHeight;
 
 resource.addResource(resources);
 
@@ -21,8 +20,8 @@ const game = new Game({
   systems: [
     new RendererSystem({
       canvas: document.querySelector('#canvas'),
-      width: 750,
-      height: 1484,
+      width: SCREEN_WIDTH,
+      height: SCREEN_HEIGHT,
       antialias: true,
     }),
     new ImgSystem(),
@@ -35,42 +34,7 @@ const game = new Game({
   ],
 });
 
-game.scene.transform.size.width = 750;
-game.scene.transform.size.height = 1484;
 
-const pos = {
-  x: 500,
-  y: 1100,
-};
-
-const ball = createBall(pos);
-const { basetFront, playAnim } = createBasketFront();
-const btn = createBtn({
-  text: '投球',
-  transform: {
-    position: {
-      x: 0,
-      y: -120,
-    },
-    origin: {
-      x: 0.5,
-      y: 0.5,
-    },
-    anchor: {
-      x: 0.5,
-      y: 1,
-    },
-  },
-  callback: () => {
-    alert('还没做呢～一起来完善吧');
-  },
-});
-
-game.scene.addChild(createBackground());
-game.scene.addChild(createBoard());
-game.scene.addChild(ball);
-game.scene.addChild(basetFront);
-game.scene.addChild(btn);
-
-window.playAnim = playAnim;
-window.game = game;
+game.loadScene({
+  scene: BattleScene()
+})
