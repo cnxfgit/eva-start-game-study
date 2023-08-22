@@ -15,4 +15,19 @@ export default [
     },
     preload: true,
   },
+  {
+    name: 'tile',
+    type: RESOURCE_TYPE.SPRITE,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/bg/tile.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/bg/tile.json',
+      }
+    },
+    preload: true,
+  },
 ];
