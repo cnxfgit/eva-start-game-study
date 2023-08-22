@@ -10,6 +10,7 @@ import { TransitionSystem } from '@eva/plugin-transition';
 import { GraphicsSystem } from '@eva/plugin-renderer-graphics';
 import { TextSystem } from '@eva/plugin-renderer-text';
 import BattleScene from './Scenes/Battle';
+import {SpriteSystem} from '@eva/plugin-renderer-sprite';
 
 export const SCREEN_WIDTH = window.innerWidth;
 export const SCREEN_HEIGHT = window.innerHeight;
@@ -31,6 +32,7 @@ const game = new Game({
     new EventSystem(),
     new GraphicsSystem(),
     new TextSystem(),
+    new SpriteSystem(),
   ],
 });
 
