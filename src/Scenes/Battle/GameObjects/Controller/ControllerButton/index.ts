@@ -1,5 +1,7 @@
 import {GameObject} from '@eva/eva.js';
 import {Sprite} from '@eva/plugin-renderer-sprite';
+import {Event} from '@eva/plugin-renderer-event';
+import {Transition} from '@eva/plugin-transition';
 
 const CTRL_WIDTH = 70;
 const CTRL_HEIGHT = 60;
@@ -30,11 +32,95 @@ const ControllerButton = (index: number) => {
       y: 1,
     }
   })
+
+  const animation = button.addComponent(new Transition());
+  animation.group = {
+    small: [
+      {
+        name: 'scale.x',
+        component: button.transform,
+        values: [
+          {
+            time: 0,
+            value: 1,
+            tween: 'ease-out'
+          },
+          {
+            time: 100,
+            value: 0.9,
+            tween: 'ease-in'
+          }
+        ]
+      },
+      {
+        name: 'scale.y',
+        component: button.transform,
+        values: [
+          {
+            time: 0,
+            value: 1,
+            tween: 'ease-out'
+          },
+          {
+            time: 100,
+            value: 0.9,
+            tween: 'ease-in'
+          }
+        ]
+      }
+    ],
+    big: [
+      {
+        name: 'scale.x',
+        component: button.transform,
+        values: [
+          {
+            time: 0,
+            value: 0.9,
+            tween: 'ease-out'
+          },
+          {
+            time: 100,
+            value: 1,
+            tween: 'ease-in'
+          }
+        ]
+      },
+      {
+        name: 'scale.y',
+        component: button.transform,
+        values: [
+          {
+            time: 0,
+            value: 0.9,
+            tween: 'ease-out'
+          },
+          {
+            time: 100,
+            value: 1,
+            tween: 'ease-in'
+          }
+        ]
+      }
+    ]
+  }
+
   button.addComponent(new Sprite({
     resource: 'ctrl',
     spriteName: `ctrl (${index}).png`,
   }))
 
+  const event = button.addComponent(new Event());
+  event.on('touchstart', () => {
+    animation.play('small')
+  })
+
+  const endHandler = () => {
+    animation.play('big')
+  };
+
+  event.on('touchend', endHandler)
+  event.on('touchendoutside', endHandler)
 
   return button;
 }
