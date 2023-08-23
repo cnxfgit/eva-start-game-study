@@ -2,6 +2,8 @@ import {GameObject} from '@eva/eva.js';
 import {Sprite} from '@eva/plugin-renderer-sprite';
 import {Event} from '@eva/plugin-renderer-event';
 import {Transition} from '@eva/plugin-transition';
+import EventManager from "../../../../../Runtime/EventManager";
+import {EVENT_ENUM} from "../../../../../Enums";
 
 const CTRL_WIDTH = 70;
 const CTRL_HEIGHT = 60;
@@ -117,6 +119,8 @@ const ControllerButton = (index: number) => {
 
   const endHandler = () => {
     animation.play('big')
+
+    EventManager.Instance.emit(EVENT_ENUM.NEXT_LEVEL);
   };
 
   event.on('touchend', endHandler)

@@ -12,7 +12,7 @@ export default class EventManager extends Singleton {
 
   eventDic: Map<string, Array<IItem>> = new Map();
 
-  on(event: string, func: Function, ctx: unknown) {
+  on(event: string, func: Function, ctx?: unknown) {
     if (this.eventDic.has(event)) {
       this.eventDic.get(event).push({func, ctx});
     } else {

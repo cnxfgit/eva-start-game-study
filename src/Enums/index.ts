@@ -10,3 +10,7 @@ export enum TILE_TYPE_ENUM {
   CLIFF_RIGHT = 'CLIFF_RIGHT', // 悬崖右
   FLOOR = 'FLOOR' // 地板
 }
+
+export enum EVENT_ENUM{
+  NEXT_LEVEL= 'NEXT_LEVEL'
+}
