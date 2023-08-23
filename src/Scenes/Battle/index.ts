@@ -3,7 +3,7 @@ import {SCREEN_HEIGHT, SCREEN_WIDTH} from '../../index';
 import BackgroundColor from './GameObjects/BackgroundColor';
 import Footer from './GameObjects/Footer';
 import Controller from './GameObjects/Controller';
-import {BattleManager} from './BattleManager';
+import BattleManager from './BattleManager';
 
 const BattleScene = () => {
   const scene = new Scene('BattleScene', {

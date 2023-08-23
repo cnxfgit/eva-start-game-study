@@ -1,5 +1,5 @@
 import {GameObject} from '@eva/eva.js';
-import {TileMapManager} from './TileMapManager';
+import TileMapManager from './TileMapManager';
 
 
 

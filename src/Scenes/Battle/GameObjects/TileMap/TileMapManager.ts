@@ -1,12 +1,10 @@
 import {Component} from '@eva/eva.js';
 import Tile from '../Tile';
-import DataManagerInstance from '../../../../Runtime/DataManager';
+import {randomByRange} from '../../../../Utils/inedx';
+import DataManager from '../../../../Runtime/DataManager';
 
-const randomByRange = (start: number, end: number) => {
-  return Math.floor(Math.random() * (start + (end - start)));
-}
 
-export class TileMapManager extends Component {
+export default class TileMapManager extends Component {
   static componentName = 'TileMapManager';
 
   init() {
@@ -14,7 +12,7 @@ export class TileMapManager extends Component {
   }
 
   initTile() {
-    const {mapInfo} = DataManagerInstance;
+    const {mapInfo} = DataManager.Instance;
     for (let i = 0; i < mapInfo.length; i++) {
       const column = mapInfo[i];
       for (let j = 0; j < column.length; j++) {
@@ -24,7 +22,7 @@ export class TileMapManager extends Component {
         }
 
         let number = item.src;
-        if ((number === 1 || number === 5 || number === 9) && i%2 === 0 &&j%2===0) {
+        if ((number === 1 || number === 5 || number === 9) && i % 2 === 0 && j % 2 === 0) {
           number += randomByRange(0, 4);
         }
 
