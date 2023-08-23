@@ -1,4 +1,4 @@
-import {Scene} from '@eva/eva.js';
+import {GameObject, Scene} from '@eva/eva.js';
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from '../../index';
 import BackgroundColor from './GameObjects/BackgroundColor';
 import Footer from './GameObjects/Footer';
@@ -14,8 +14,12 @@ const BattleScene = () => {
   });
 
   scene.addChild(BackgroundColor());
-  scene.addComponent(new BattleManager());
   scene.addChild(Controller());
+
+  const stage = new GameObject('stage');
+  stage.addComponent(new BattleManager());
+
+  scene.addChild(stage);
   scene.addChild(Footer());
 
   return scene;
