@@ -11,6 +11,16 @@ export enum TILE_TYPE_ENUM {
   FLOOR = 'FLOOR' // 地板
 }
 
-export enum EVENT_ENUM{
-  NEXT_LEVEL= 'NEXT_LEVEL'
+export enum EVENT_ENUM {
+  NEXT_LEVEL = 'NEXT_LEVEL',
+  PLAYER_CTRL = 'PLAYER_CTRL'
+}
+
+export enum CONTROLLER_ENUM {
+  TOP = 'TOP',
+  BOTTOM = 'BOTTOM',
+  LEFT = 'LEFT',
+  RIGHT = 'RIGHT',
+  TURNLEFT = 'TURNLEFT',
+  TURNRIGHT = 'TURNRIGHT'
 }

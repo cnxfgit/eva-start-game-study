@@ -1,5 +1,6 @@
 import {GameObject} from '@eva/eva.js';
 import ControllerButton from './ControllerButton';
+import {CONTROLLER_ENUM} from "../../../../Enums";
 
 
 const Controller = () => {
@@ -18,12 +19,12 @@ const Controller = () => {
     }
   })
 
-  controller.addChild(ControllerButton(1));
-  controller.addChild(ControllerButton(2));
-  controller.addChild(ControllerButton(3));
-  controller.addChild(ControllerButton(4));
-  controller.addChild(ControllerButton(5));
-  controller.addChild(ControllerButton(6));
+  controller.addChild(ControllerButton(CONTROLLER_ENUM.TURNLEFT, 1));
+  controller.addChild(ControllerButton(CONTROLLER_ENUM.LEFT,2));
+  controller.addChild(ControllerButton(CONTROLLER_ENUM.TOP,3));
+  controller.addChild(ControllerButton(CONTROLLER_ENUM.BOTTOM,4));
+  controller.addChild(ControllerButton(CONTROLLER_ENUM.TURNRIGHT,5));
+  controller.addChild(ControllerButton(CONTROLLER_ENUM.RIGHT,6));
 
   return controller;
 }
