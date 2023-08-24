@@ -30,4 +30,19 @@ export default [
     },
     preload: true,
   },
+  {
+    name: 'player_idle_top',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/idle_top.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/idle_top.json',
+      }
+    },
+    preload: true,
+  },
 ];

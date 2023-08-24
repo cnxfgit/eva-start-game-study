@@ -6,6 +6,7 @@ import {SCREEN_HEIGHT, SCREEN_WIDTH} from '../../index';
 import {TILE_HEIGHT, TILE_WIDTH} from './GameObjects/Tile';
 import EventManager from '../../Runtime/EventManager';
 import {EVENT_ENUM} from '../../Enums';
+import Player from "./GameObjects/Player";
 
 export default class BattleManager extends Component {
   static componentName = 'BattleManager'; // 设置组件的名字
@@ -23,6 +24,7 @@ export default class BattleManager extends Component {
     DataManager.Instance.mapRowCount = level.mapInfo.length;
     DataManager.Instance.mapColumnCount = level.mapInfo[0].length;
     this.generateTileMap();
+    this.generatePlayer()
   }
 
   clearLevel() {
@@ -36,6 +38,10 @@ export default class BattleManager extends Component {
   generateTileMap() {
     this.gameObject.addChild(TileMap());
     this.adaptPos();
+  }
+
+  generatePlayer(){
+    this.gameObject.addChild(Player());
   }
 
   adaptPos() {
