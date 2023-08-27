@@ -46,6 +46,51 @@ export default [
     preload: true,
   },
   {
+    name: 'player_idle_bottom',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/idle_bottom.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/idle_bottom.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'player_idle_left',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/idle_left.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/idle_left.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'player_idle_right',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/idle_right.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/idle_right.json',
+      }
+    },
+    preload: true,
+  },
+  {
     name: 'player_turn_left_top',
     type: RESOURCE_TYPE.SPRITE_ANIMATION,
     src: {
@@ -56,6 +101,51 @@ export default [
       json: {
         type: 'json',
         url: './static/assets/player/turn_left_top.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'player_turn_left_bottom',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/turn_left_bottom.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/turn_left_bottom.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'player_turn_left_left',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/turn_left_left.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/turn_left_left.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'player_turn_left_right',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/turn_left_right.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/turn_left_right.json',
       }
     },
     preload: true,
