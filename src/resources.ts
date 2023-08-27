@@ -150,4 +150,64 @@ export default [
     },
     preload: true,
   },
+  {
+    name: 'player_turn_right_top',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/turn_right_top.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/turn_right_top.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'player_turn_right_bottom',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/turn_right_bottom.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/turn_right_bottom.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'player_turn_right_left',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/turn_right_left.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/turn_right_left.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'player_turn_right_right',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/turn_right_right.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/turn_right_right.json',
+      }
+    },
+    preload: true,
+  },
 ];

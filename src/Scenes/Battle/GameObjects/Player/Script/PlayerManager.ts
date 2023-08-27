@@ -1,45 +1,20 @@
-import {Component} from '@eva/eva.js';
 import EventManager from '../../../../../Runtime/EventManager';
 import {
   CONTROLLER_ENUM,
   DIRECTION_ENUM,
-  DIRECTION_ORDER_ENUM,
   ENTITY_STATE_ENUM,
   EVENT_ENUM,
-  PARAMS_NAME_ENUM
 } from '../../../../../Enums';
-import {TILE_HEIGHT, TILE_WIDTH} from '../../Tile';
 import PlayerStateMachine from './PlayerStateMachine';
+import EntityManager from '../../../../../Base/EntityManager';
 
-export class PlayerManager extends Component {
+export class PlayerManager extends EntityManager {
   static componentName = 'PlayerManager';
 
-  x: number;
-  y: number;
+
   targetX: number;
   targetY: number;
   readonly speed = 1 / 10;
-  private _direction: DIRECTION_ENUM;
-  private _state: ENTITY_STATE_ENUM;
-  fsm: PlayerStateMachine;
-
-  get direction() {
-    return this._direction;
-  }
-
-  set direction(newDirection) {
-    this._direction = newDirection;
-    this.fsm.setParams(PARAMS_NAME_ENUM.DIRECTION, DIRECTION_ORDER_ENUM[newDirection]);
-  }
-
-  get state() {
-    return this._state;
-  }
-
-  set state(newState) {
-    this._state = newState;
-    this.fsm.setParams(newState, true);
-  }
 
   init() {
     this.fsm = this.gameObject.addComponent(new PlayerStateMachine());
@@ -54,8 +29,7 @@ export class PlayerManager extends Component {
 
   update() {
     this.updateXY();
-    this.gameObject.transform.position.x = this.x * TILE_WIDTH - 1.5 * TILE_WIDTH;
-    this.gameObject.transform.position.y = this.y * TILE_HEIGHT - 1.5 * TILE_HEIGHT;
+    super.update();
   }
 
   updateXY() {
@@ -87,7 +61,6 @@ export class PlayerManager extends Component {
     } else if (inputDirection === CONTROLLER_ENUM.RIGHT) {
       this.targetX += 1;
     } else if (inputDirection === CONTROLLER_ENUM.TURNLEFT) {
-      this.state = ENTITY_STATE_ENUM.TURNLEFT;
       if (this.direction === DIRECTION_ENUM.TOP) {
         this.direction = DIRECTION_ENUM.LEFT;
       } else if (this.direction === DIRECTION_ENUM.LEFT) {
@@ -97,6 +70,18 @@ export class PlayerManager extends Component {
       } else if (this.direction === DIRECTION_ENUM.RIGHT) {
         this.direction = DIRECTION_ENUM.TOP;
       }
+      this.state = ENTITY_STATE_ENUM.TURNLEFT;
+    } else if (inputDirection === CONTROLLER_ENUM.TURNRIGHT) {
+      if (this.direction === DIRECTION_ENUM.TOP) {
+        this.direction = DIRECTION_ENUM.RIGHT;
+      } else if (this.direction === DIRECTION_ENUM.RIGHT) {
+        this.direction = DIRECTION_ENUM.BOTTOM;
+      } else if (this.direction === DIRECTION_ENUM.BOTTOM) {
+        this.direction = DIRECTION_ENUM.LEFT;
+      } else if (this.direction === DIRECTION_ENUM.LEFT) {
+        this.direction = DIRECTION_ENUM.TOP;
+      }
+      this.state = ENTITY_STATE_ENUM.TURNRIGHT;
     }
   }
 }
