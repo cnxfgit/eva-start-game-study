@@ -18,6 +18,13 @@ export const getInitParamsTrigger = () => {
   }
 };
 
+export const getInitParamsNumber = () => {
+  return {
+    type: FMS_PARAMS_TYPE_ENUM.NUMBER,
+    value: 0
+  }
+};
+
 export default class PlayerStateMachine extends Component {
   static componentName = 'PlayerStateMachine';
   private _currentState: State = null;
@@ -34,6 +41,15 @@ export default class PlayerStateMachine extends Component {
     if (this.params.has(paramName)) {
       this.params.get(paramName).value = vaule;
       this.run();
+      this.resetTrigger();
+    }
+  }
+
+  resetTrigger() {
+    for (const [, value] of this.params) {
+      if (value.type === FMS_PARAMS_TYPE_ENUM.TRIGGER) {
+        value.value = false;
+      }
     }
   }
 
@@ -62,6 +78,7 @@ export default class PlayerStateMachine extends Component {
   initParams() {
     this.params.set(PARAMS_NAME_ENUM.IDLE, getInitParamsTrigger());
     this.params.set(PARAMS_NAME_ENUM.TURNLEFT, getInitParamsTrigger());
+    this.params.set(PARAMS_NAME_ENUM.DIRECTION, getInitParamsNumber());
   }
 
   initStateMachines() {
@@ -88,6 +105,8 @@ export default class PlayerStateMachine extends Component {
       case this.stateMachines.get(PARAMS_NAME_ENUM.TURNLEFT):
         if (this.stateMachines.get(PARAMS_NAME_ENUM.TURNLEFT)) {
           this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.TURNLEFT);
+        } else if (this.stateMachines.get(PARAMS_NAME_ENUM.IDLE)) {
+          this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.IDLE);
         } else {
           this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.IDLE);
         }

@@ -1,6 +1,13 @@
 import {Component} from '@eva/eva.js';
 import EventManager from '../../../../../Runtime/EventManager';
-import {CONTROLLER_ENUM, EVENT_ENUM, PARAMS_NAME_ENUM} from '../../../../../Enums';
+import {
+  CONTROLLER_ENUM,
+  DIRECTION_ENUM,
+  DIRECTION_ORDER_ENUM,
+  ENTITY_STATE_ENUM,
+  EVENT_ENUM,
+  PARAMS_NAME_ENUM
+} from '../../../../../Enums';
 import {TILE_HEIGHT, TILE_WIDTH} from '../../Tile';
 import PlayerStateMachine from './PlayerStateMachine';
 
@@ -11,8 +18,28 @@ export class PlayerManager extends Component {
   y: number;
   targetX: number;
   targetY: number;
-  speed = 1 / 10;
+  readonly speed = 1 / 10;
+  private _direction: DIRECTION_ENUM;
+  private _state: ENTITY_STATE_ENUM;
   fsm: PlayerStateMachine;
+
+  get direction() {
+    return this._direction;
+  }
+
+  set direction(newDirection) {
+    this._direction = newDirection;
+    this.fsm.setParams(PARAMS_NAME_ENUM.DIRECTION, DIRECTION_ORDER_ENUM[newDirection]);
+  }
+
+  get state() {
+    return this._state;
+  }
+
+  set state(newState) {
+    this._state = newState;
+    this.fsm.setParams(newState, true);
+  }
 
   init() {
     this.fsm = this.gameObject.addComponent(new PlayerStateMachine());
@@ -21,7 +48,8 @@ export class PlayerManager extends Component {
     this.targetX = 0;
     this.targetY = 0;
     EventManager.Instance.on(EVENT_ENUM.PLAYER_CTRL, this.move, this);
-    this.fsm.setParams(PARAMS_NAME_ENUM.IDLE, true);
+    this.state = ENTITY_STATE_ENUM.IDLE;
+    this.direction = DIRECTION_ENUM.TOP;
   }
 
   update() {
@@ -59,7 +87,16 @@ export class PlayerManager extends Component {
     } else if (inputDirection === CONTROLLER_ENUM.RIGHT) {
       this.targetX += 1;
     } else if (inputDirection === CONTROLLER_ENUM.TURNLEFT) {
-      this.fsm.setParams(PARAMS_NAME_ENUM.TURNLEFT, true);
+      this.state = ENTITY_STATE_ENUM.TURNLEFT;
+      if (this.direction === DIRECTION_ENUM.TOP) {
+        this.direction = DIRECTION_ENUM.LEFT;
+      } else if (this.direction === DIRECTION_ENUM.LEFT) {
+        this.direction = DIRECTION_ENUM.BOTTOM;
+      } else if (this.direction === DIRECTION_ENUM.BOTTOM) {
+        this.direction = DIRECTION_ENUM.RIGHT;
+      } else if (this.direction === DIRECTION_ENUM.RIGHT) {
+        this.direction = DIRECTION_ENUM.TOP;
+      }
     }
   }
 }
