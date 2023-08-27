@@ -45,4 +45,19 @@ export default [
     },
     preload: true,
   },
+  {
+    name: 'player_turn_left_top',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/turn_left_top.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/turn_left_top.json',
+      }
+    },
+    preload: true,
+  },
 ];

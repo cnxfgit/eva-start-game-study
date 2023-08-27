@@ -1,7 +1,8 @@
 import {Component} from '@eva/eva.js';
 import EventManager from '../../../../../Runtime/EventManager';
-import {CONTROLLER_ENUM, EVENT_ENUM} from '../../../../../Enums';
-import {TILE_HEIGHT, TILE_WIDTH} from "../../Tile";
+import {CONTROLLER_ENUM, EVENT_ENUM, PARAMS_NAME_ENUM} from '../../../../../Enums';
+import {TILE_HEIGHT, TILE_WIDTH} from '../../Tile';
+import PlayerStateMachine from './PlayerStateMachine';
 
 export class PlayerManager extends Component {
   static componentName = 'PlayerManager';
@@ -11,13 +12,16 @@ export class PlayerManager extends Component {
   targetX: number;
   targetY: number;
   speed = 1 / 10;
+  fsm: PlayerStateMachine;
 
   init() {
+    this.fsm = this.gameObject.addComponent(new PlayerStateMachine());
     this.x = 0;
     this.y = 0;
     this.targetX = 0;
     this.targetY = 0;
     EventManager.Instance.on(EVENT_ENUM.PLAYER_CTRL, this.move, this);
+    this.fsm.setParams(PARAMS_NAME_ENUM.IDLE, true);
   }
 
   update() {
@@ -54,6 +58,8 @@ export class PlayerManager extends Component {
       this.targetX -= 1;
     } else if (inputDirection === CONTROLLER_ENUM.RIGHT) {
       this.targetX += 1;
+    } else if (inputDirection === CONTROLLER_ENUM.TURNLEFT) {
+      this.fsm.setParams(PARAMS_NAME_ENUM.TURNLEFT, true);
     }
   }
 }

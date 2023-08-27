@@ -1,11 +1,9 @@
 import {GameObject} from '@eva/eva.js';
-import {SpriteAnimation} from '@eva/plugin-renderer-sprite-animation';
-import {PlayerManager} from "./Script/PlayerManager";
+import {PlayerManager} from './Script/PlayerManager';
 
 export const ENTITY_WIDTH = 128;
 export const ENTITY_HEIGHT = 128;
 
-export const ANIMATION_SPEED = 1000 / 8;
 
 const Player = () => {
   const player = new GameObject('player', {
@@ -15,16 +13,7 @@ const Player = () => {
     }
   })
 
-  const spriteAnimation = player.addComponent(new SpriteAnimation({
-    resource: 'player_idle_top',
-    speed: ANIMATION_SPEED,
-    forwards: true,
-    autoPlay: false,
-  }));
-
   player.addComponent(new PlayerManager());
-
-  spriteAnimation.play();
 
   return player;
 }
