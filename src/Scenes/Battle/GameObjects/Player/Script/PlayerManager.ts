@@ -7,6 +7,7 @@ import {
 } from '../../../../../Enums';
 import PlayerStateMachine from './PlayerStateMachine';
 import EntityManager from '../../../../../Base/EntityManager';
+import DataManager from "../../../../../Runtime/DataManager";
 
 export class PlayerManager extends EntityManager {
   static componentName = 'PlayerManager';
@@ -52,6 +53,7 @@ export class PlayerManager extends EntityManager {
   }
 
   move(inputDirection: CONTROLLER_ENUM) {
+    console.log(DataManager.Instance.tileInfo)
     if (inputDirection === CONTROLLER_ENUM.TOP) {
       this.targetY -= 1;
     } else if (inputDirection === CONTROLLER_ENUM.BOTTOM) {

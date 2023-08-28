@@ -1,10 +1,12 @@
 import {GameObject} from '@eva/eva.js';
 import {Sprite} from '@eva/plugin-renderer-sprite';
+import TileManager from './TileManager';
+import {TILE_TYPE_ENUM} from '../../../../Enums';
 
 export const TILE_WIDTH = 32;
 export const TILE_HEIGHT = 32;
 
-const Tile = (imgSrc: string, i: number, j: number) => {
+const Tile = (type: TILE_TYPE_ENUM,imgSrc: string, i: number, j: number) => {
   const tile = new GameObject('tile', {
     size: {
       width: TILE_WIDTH,
@@ -20,6 +22,8 @@ const Tile = (imgSrc: string, i: number, j: number) => {
     resource: 'tile',
     spriteName: imgSrc,
   }))
+
+  tile.addComponent(new TileManager(type));
 
   return tile;
 }
