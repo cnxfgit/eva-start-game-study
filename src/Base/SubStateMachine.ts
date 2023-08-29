@@ -1,11 +1,11 @@
 import State from './State';
-import PlayerStateMachine from '../Scenes/Battle/GameObjects/Player/Script/PlayerStateMachine';
+import StateMachine from './StateMachine';
 
 export default abstract class SubStateMachine {
   private _currentState: State = null;
   stateMachines: Map<string, State> = new Map();
 
-  constructor(public fsm: PlayerStateMachine) {
+  constructor(public fsm: StateMachine) {
   }
 
   get currentState() {

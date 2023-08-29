@@ -96,6 +96,7 @@ export class PlayerManager extends EntityManager {
       if (direction === DIRECTION_ENUM.TOP) {
         const playerNextY = y - 1;
         if (playerNextY < 0) {
+          this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
           return true;
         }
 
@@ -106,11 +107,13 @@ export class PlayerManager extends EntityManager {
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
+          this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
           return true;
         }
       } else if (direction === DIRECTION_ENUM.BOTTOM) {
         const playerNextY = y - 1;
         if (playerNextY < 0) {
+          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
           return true;
         }
 
@@ -121,11 +124,13 @@ export class PlayerManager extends EntityManager {
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
+          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
           return true;
         }
       } else if (direction === DIRECTION_ENUM.LEFT) {
         const playerNextY = y - 1;
         if (playerNextY < 0) {
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
           return true;
         }
 
@@ -137,11 +142,13 @@ export class PlayerManager extends EntityManager {
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
           return true;
         }
       } else if (direction === DIRECTION_ENUM.RIGHT) {
         const playerNextY = y - 1;
         if (playerNextY < 0) {
+          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
           return true;
         }
 
@@ -153,6 +160,7 @@ export class PlayerManager extends EntityManager {
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
+          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
           return true;
         }
       }
@@ -160,6 +168,7 @@ export class PlayerManager extends EntityManager {
       if (direction === DIRECTION_ENUM.TOP) {
         const playerNextY = y + 1;
         if (playerNextY > column - 1) {
+          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
           return true;
         }
 
@@ -170,11 +179,13 @@ export class PlayerManager extends EntityManager {
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
+          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
           return true;
         }
       } else if (direction === DIRECTION_ENUM.BOTTOM) {
         const playerNextY = y + 1;
         if (playerNextY > column - 1) {
+          this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
           return true;
         }
 
@@ -185,11 +196,13 @@ export class PlayerManager extends EntityManager {
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
+          this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
           return true;
         }
       } else if (direction === DIRECTION_ENUM.LEFT) {
         const playerNextY = y + 1;
         if (playerNextY > column - 1) {
+          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
           return true;
         }
 
@@ -201,11 +214,13 @@ export class PlayerManager extends EntityManager {
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
+          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
           return true;
         }
       } else if (direction === DIRECTION_ENUM.RIGHT) {
         const playerNextY = y + 1;
         if (playerNextY > column - 1) {
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
           return true;
         }
 
@@ -217,6 +232,7 @@ export class PlayerManager extends EntityManager {
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
           return true;
         }
       }
@@ -224,6 +240,7 @@ export class PlayerManager extends EntityManager {
       if (direction === DIRECTION_ENUM.TOP) {
         const playerNextX = x - 1;
         if (playerNextX < 0) {
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
           return true;
         }
 
@@ -235,11 +252,13 @@ export class PlayerManager extends EntityManager {
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
           return true;
         }
       } else if (direction === DIRECTION_ENUM.BOTTOM) {
         const playerNextX = x - 1;
         if (playerNextX < 0) {
+          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
           return true;
         }
 
@@ -250,11 +269,13 @@ export class PlayerManager extends EntityManager {
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
+          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
           return true;
         }
       } else if (direction === DIRECTION_ENUM.LEFT) {
         const playerNextX = x - 1;
         if (playerNextX < 0) {
+          this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
           return true;
         }
 
@@ -265,11 +286,13 @@ export class PlayerManager extends EntityManager {
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
+          this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
           return true;
         }
       } else if (direction === DIRECTION_ENUM.RIGHT) {
         const playerNextX = x - 1;
         if (playerNextX > row - 1) {
+          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
           return true;
         }
 
@@ -280,6 +303,7 @@ export class PlayerManager extends EntityManager {
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
+          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
           return true;
         }
       }
@@ -287,6 +311,7 @@ export class PlayerManager extends EntityManager {
       if (direction === DIRECTION_ENUM.TOP) {
         const playerNextX = x + 1;
         if (playerNextX > row - 1) {
+          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
           return true;
         }
 
@@ -298,11 +323,13 @@ export class PlayerManager extends EntityManager {
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
+          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
           return true;
         }
       } else if (direction === DIRECTION_ENUM.BOTTOM) {
         const playerNextX = x + 1;
         if (playerNextX > row - 1) {
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
           return true;
         }
 
@@ -313,11 +340,13 @@ export class PlayerManager extends EntityManager {
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
           return true;
         }
       } else if (direction === DIRECTION_ENUM.LEFT) {
         const playerNextX = x + 1;
         if (playerNextX > row - 1) {
+          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
           return true;
         }
 
@@ -328,11 +357,13 @@ export class PlayerManager extends EntityManager {
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
+          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
           return true;
         }
       } else if (direction === DIRECTION_ENUM.RIGHT) {
         const playerNextX = x + 1;
         if (playerNextX > row - 1) {
+          this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
           return true;
         }
 
@@ -343,6 +374,7 @@ export class PlayerManager extends EntityManager {
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
+          this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
           return true;
         }
       }
@@ -367,6 +399,7 @@ export class PlayerManager extends EntityManager {
         (!tileInfo[nextX]?.[nextY] || tileInfo[nextX]?.[nextY]?.turnable)) {
         // nothing
       } else {
+        this.state = ENTITY_STATE_ENUM.BLOCKTURNLEFT;
         return true;
       }
     } else if (inputDirection === CONTROLLER_ENUM.TURNRIGHT) {
@@ -390,6 +423,7 @@ export class PlayerManager extends EntityManager {
         (!tileInfo[nextX]?.[nextY] || tileInfo[nextX]?.[nextY]?.turnable)) {
         // nothing
       } else {
+        this.state = ENTITY_STATE_ENUM.BLOCKTURNRIGHT;
         return true;
       }
     }
