@@ -1,4 +1,4 @@
-import {PARAMS_NAME_ENUM} from '../../../../../Enums';
+import {ENTITY_STATE_ENUM, PARAMS_NAME_ENUM} from '../../../../../Enums';
 import {ANIMATION_SPEED} from '../../../../../Base/State';
 import {SpriteAnimation} from '@eva/plugin-renderer-sprite-animation';
 import IdleSubStateMachine from './IdleSubStateMachine';
@@ -11,6 +11,7 @@ import BlockBackStateMachine from "./BlockBackStateMachine";
 import BlockLeftStateMachine from "./BlockLeftStateMachine";
 import BlockRightStateMachine from "./BlockRightStateMachine";
 import BlockTurnRightStateMachine from "./BlockTurnRightStateMachine";
+import PlayerManager from "./PlayerManager";
 
 
 export default class PlayerStateMachine extends StateMachine {
@@ -69,7 +70,7 @@ export default class PlayerStateMachine extends StateMachine {
     spriteAnimation.on('complete', () => {
       const list = ['player_turn'];
       if (list.some(i => spriteAnimation.resource.startsWith(i))) {
-        this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.IDLE);
+        this.gameObject.getComponent(PlayerManager).state = ENTITY_STATE_ENUM.IDLE;
       }
     });
   }

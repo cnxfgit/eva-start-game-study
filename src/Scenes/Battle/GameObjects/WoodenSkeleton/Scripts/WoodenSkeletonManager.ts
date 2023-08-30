@@ -16,6 +16,7 @@ export default class WoodenSkeletonManager extends EntityManager {
     this.direction = DIRECTION_ENUM.TOP;
 
     EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.onChangeDirection, this);
+    EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.onAttack, this);
   }
 
   start() {
@@ -30,18 +31,27 @@ export default class WoodenSkeletonManager extends EntityManager {
 
     if (disY === disX && !init) return;
 
-    if (playerX > this.x && playerY < this.y) {
+    if (playerX >= this.x && playerY <= this.y) {
       // 第一象限
       this.direction = disX > disY ? DIRECTION_ENUM.RIGHT : DIRECTION_ENUM.TOP;
-    } else if (playerX < this.x && playerY < this.y) {
+    } else if (playerX <= this.x && playerY <= this.y) {
       // 第二象限
       this.direction = disX > disY ? DIRECTION_ENUM.LEFT : DIRECTION_ENUM.TOP;
-    } else if (playerX < this.x && playerY > this.y) {
+    } else if (playerX <= this.x && playerY >= this.y) {
       // 第三象限
       this.direction = disX > disY ? DIRECTION_ENUM.LEFT : DIRECTION_ENUM.BOTTOM;
-    } else if (playerX > this.x && playerY > this.y) {
+    } else if (playerX >= this.x && playerY >= this.y) {
       // 第四象限
       this.direction = disX > disY ? DIRECTION_ENUM.RIGHT : DIRECTION_ENUM.BOTTOM;
+    }
+  }
+
+  onAttack() {
+    const {x: playerX, y: playerY} = DataManager.Instance.player;
+
+    if ((this.x === playerX && Math.abs(this.y - playerY) <= 1) ||
+      (this.y === playerY && Math.abs(this.x - playerX) <= 1)) {
+     this.state = ENTITY_STATE_ENUM.ATTACK;
     }
   }
 }
