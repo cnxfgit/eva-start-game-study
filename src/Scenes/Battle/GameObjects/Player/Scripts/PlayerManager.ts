@@ -20,6 +20,7 @@ export default class PlayerManager extends EntityManager {
     this.targetX = 2;
     this.targetY = 8;
     EventManager.Instance.on(EVENT_ENUM.PLAYER_CTRL, this.inputHandler, this);
+    EventManager.Instance.on(EVENT_ENUM.ATTACK_PLAYER, this.onDead, this);
     this.state = ENTITY_STATE_ENUM.IDLE;
     this.direction = DIRECTION_ENUM.TOP;
   }
@@ -51,8 +52,16 @@ export default class PlayerManager extends EntityManager {
     }
   }
 
+  onDead(type: ENTITY_STATE_ENUM) {
+    this.state = type;
+  }
+
   inputHandler(inputDirection: CONTROLLER_ENUM) {
     if (this.isMoving) {
+      return;
+    }
+    if (this.state === ENTITY_STATE_ENUM.DEATH
+      || this.state === ENTITY_STATE_ENUM.AIRDEATH) {
       return;
     }
     if (this.willBlock(inputDirection)) {

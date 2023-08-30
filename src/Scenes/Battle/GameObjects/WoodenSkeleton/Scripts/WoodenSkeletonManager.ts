@@ -47,11 +47,13 @@ export default class WoodenSkeletonManager extends EntityManager {
   }
 
   onAttack() {
-    const {x: playerX, y: playerY} = DataManager.Instance.player;
+    const {x: playerX, y: playerY, state} = DataManager.Instance.player;
 
-    if ((this.x === playerX && Math.abs(this.y - playerY) <= 1) ||
-      (this.y === playerY && Math.abs(this.x - playerX) <= 1)) {
+    if (((this.x === playerX && Math.abs(this.y - playerY) <= 1) ||
+      (this.y === playerY && Math.abs(this.x - playerX) <= 1)) &&
+      state === ENTITY_STATE_ENUM.IDLE) {
      this.state = ENTITY_STATE_ENUM.ATTACK;
+     EventManager.Instance.emit(EVENT_ENUM.ATTACK_PLAYER, ENTITY_STATE_ENUM.DEATH);
     }
   }
 }

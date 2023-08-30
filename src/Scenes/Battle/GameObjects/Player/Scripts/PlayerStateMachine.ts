@@ -12,6 +12,7 @@ import BlockLeftStateMachine from "./BlockLeftStateMachine";
 import BlockRightStateMachine from "./BlockRightStateMachine";
 import BlockTurnRightStateMachine from "./BlockTurnRightStateMachine";
 import PlayerManager from "./PlayerManager";
+import DeathSubStateMachine from "./DeathSubStateMachine";
 
 
 export default class PlayerStateMachine extends StateMachine {
@@ -40,6 +41,8 @@ export default class PlayerStateMachine extends StateMachine {
     this.params.set(PARAMS_NAME_ENUM.BLOCKRIGHT, getInitParamsTrigger());
     this.params.set(PARAMS_NAME_ENUM.BLOCKTURNLEFT, getInitParamsTrigger());
     this.params.set(PARAMS_NAME_ENUM.BLOCKTURNRIGHT, getInitParamsTrigger());
+    this.params.set(PARAMS_NAME_ENUM.DEATH, getInitParamsTrigger());
+    this.params.set(PARAMS_NAME_ENUM.AIRDEATH, getInitParamsTrigger());
     this.params.set(PARAMS_NAME_ENUM.DIRECTION, getInitParamsNumber());
   }
 
@@ -63,6 +66,8 @@ export default class PlayerStateMachine extends StateMachine {
       new BlockTurnLeftStateMachine(this, spriteAnimation));
     this.stateMachines.set(PARAMS_NAME_ENUM.BLOCKTURNRIGHT,
       new BlockTurnRightStateMachine(this, spriteAnimation));
+    this.stateMachines.set(PARAMS_NAME_ENUM.DEATH,
+      new DeathSubStateMachine(this, spriteAnimation));
   }
 
   initAnimationEvent() {
@@ -79,7 +84,17 @@ export default class PlayerStateMachine extends StateMachine {
     switch (this.currentState) {
       case this.stateMachines.get(PARAMS_NAME_ENUM.IDLE):
       case this.stateMachines.get(PARAMS_NAME_ENUM.TURNLEFT):
-        if (this.params.get(PARAMS_NAME_ENUM.TURNLEFT).value) {
+      case this.stateMachines.get(PARAMS_NAME_ENUM.TURNRIGHT):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKFRONT):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKBCAK):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKLEFT):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKRIGHT):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKTURNLEFT):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKTURNRIGHT):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.DEATH):
+        if (this.params.get(PARAMS_NAME_ENUM.DEATH).value) {
+          this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.DEATH);
+        } else if (this.params.get(PARAMS_NAME_ENUM.TURNLEFT).value) {
           this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.TURNLEFT);
         } else if (this.params.get(PARAMS_NAME_ENUM.TURNRIGHT).value) {
           this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.TURNRIGHT);

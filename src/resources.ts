@@ -690,4 +690,64 @@ export default [
     },
     preload: true,
   },
+  {
+    name: 'player_death_top',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/death_top.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/death_top.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'player_death_bottom',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/death_bottom.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/death_bottom.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'player_death_left',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/death_left.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/death_left.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'player_death_right',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/death_right.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/death_right.json',
+      }
+    },
+    preload: true,
+  },
 ];
