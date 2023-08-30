@@ -5,7 +5,7 @@ import {DIRECTION_ENUM} from "../../../../../Enums";
 import State from "../../../../../Base/State";
 
 export default class TurnRightSubStateMachine extends DirectionSubStateMachine{
-  constructor(public fsm: PlayerStateMachine,
+  constructor(public fsm: StateMachine,
               public spriteAnimation: SpriteAnimation) {
     super(fsm);
 

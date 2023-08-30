@@ -1,9 +1,6 @@
 import {GameObject} from '@eva/eva.js';
-import {PlayerManager} from './Script/PlayerManager';
-
-export const ENTITY_WIDTH = 128;
-export const ENTITY_HEIGHT = 128;
-
+import PlayerManager from './Scripts/PlayerManager';
+import {ENTITY_HEIGHT, ENTITY_WIDTH} from "../../../../Base/EntityManager";
 
 const Player = () => {
   const player = new GameObject('player', {

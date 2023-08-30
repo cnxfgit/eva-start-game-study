@@ -570,4 +570,64 @@ export default [
     },
     preload: true,
   },
+  {
+    name: 'woodenskeleton_idle_top',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/woodenskeleton/idle_top.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/woodenskeleton/idle_top.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'woodenskeleton_idle_bottom',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/woodenskeleton/idle_bottom.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/woodenskeleton/idle_bottom.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'woodenskeleton_idle_left',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/woodenskeleton/idle_left.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/woodenskeleton/idle_left.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'woodenskeleton_idle_right',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/woodenskeleton/idle_right.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/woodenskeleton/idle_right.json',
+      }
+    },
+    preload: true,
+  },
 ];

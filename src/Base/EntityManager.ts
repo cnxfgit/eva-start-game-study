@@ -1,7 +1,10 @@
 import {Component} from '@eva/eva.js';
 import {DIRECTION_ENUM, DIRECTION_ORDER_ENUM, ENTITY_STATE_ENUM, PARAMS_NAME_ENUM} from '../Enums';
-import PlayerStateMachine from '../Scenes/Battle/GameObjects/Player/Script/PlayerStateMachine';
+import PlayerStateMachine from '../Scenes/Battle/GameObjects/Player/Scripts/PlayerStateMachine';
 import {TILE_HEIGHT, TILE_WIDTH} from "../Scenes/Battle/GameObjects/Tile";
+
+export const ENTITY_WIDTH = 128;
+export const ENTITY_HEIGHT = 128;
 
 export default abstract class EntityManager extends Component{
   static componentName = 'EntityManager';
