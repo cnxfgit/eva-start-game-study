@@ -44,8 +44,8 @@ export default class PlayerStateMachine extends StateMachine {
     this.params.set(PARAMS_NAME_ENUM.BLOCKTURNRIGHT, getInitParamsTrigger());
     this.params.set(PARAMS_NAME_ENUM.DEATH, getInitParamsTrigger());
     this.params.set(PARAMS_NAME_ENUM.AIRDEATH, getInitParamsTrigger());
+    this.params.set(PARAMS_NAME_ENUM.ATTACK, getInitParamsTrigger());
     this.params.set(PARAMS_NAME_ENUM.DIRECTION, getInitParamsNumber());
-    this.params.set(PARAMS_NAME_ENUM.ATTACK, getInitParamsNumber());
   }
 
   initStateMachines() {
@@ -77,7 +77,7 @@ export default class PlayerStateMachine extends StateMachine {
   initAnimationEvent() {
     const spriteAnimation = this.gameObject.getComponent(SpriteAnimation);
     spriteAnimation.on('complete', () => {
-      const list = ['player_turn'];
+      const list = ['player_turn', 'player_block', 'player_attack'];
       if (list.some(i => spriteAnimation.resource.startsWith(i))) {
         this.gameObject.getComponent(PlayerManager).state = ENTITY_STATE_ENUM.IDLE;
       }

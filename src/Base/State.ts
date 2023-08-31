@@ -10,6 +10,9 @@ export default class State {
   }
 
   run(){
+    if (this.animationName === this.spriteAnimation.resource) {
+      return;
+    }
     this.spriteAnimation.resource = this.animationName;
     requestAnimationFrame(()=>{
       this.spriteAnimation.play(this.times);

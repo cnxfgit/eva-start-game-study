@@ -25,6 +25,9 @@ export default class WoodenSkeletonManager extends EntityManager {
   }
 
   onChangeDirection(init: boolean) {
+    if (this.state ===ENTITY_STATE_ENUM.DEATH || !DataManager.Instance.player) {
+      return;
+    }
     const {x: playerX, y: playerY} = DataManager.Instance.player;
 
     const disX = Math.abs(this.x - playerX);
@@ -48,6 +51,9 @@ export default class WoodenSkeletonManager extends EntityManager {
   }
 
   onAttack() {
+    if (this.state ===ENTITY_STATE_ENUM.DEATH) {
+      return;
+    }
     const {x: playerX, y: playerY, state} = DataManager.Instance.player;
 
     if (((this.x === playerX && Math.abs(this.y - playerY) <= 1) ||
@@ -58,7 +64,13 @@ export default class WoodenSkeletonManager extends EntityManager {
     }
   }
 
-  onDead(){
-    console.log('enemy dead')
+  onDead(id:string){
+    if (this.state ===ENTITY_STATE_ENUM.DEATH) {
+      return;
+    }
+
+    if (id === this.id) {
+      this.state = ENTITY_STATE_ENUM.DEATH;
+    }
   }
 }

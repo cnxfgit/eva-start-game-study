@@ -1,14 +1,16 @@
 import {Component} from '@eva/eva.js';
 import {DIRECTION_ENUM, DIRECTION_ORDER_ENUM, ENTITY_STATE_ENUM, PARAMS_NAME_ENUM} from '../Enums';
 import PlayerStateMachine from '../Scenes/Battle/GameObjects/Player/Scripts/PlayerStateMachine';
-import {TILE_HEIGHT, TILE_WIDTH} from "../Scenes/Battle/GameObjects/Tile";
+import {TILE_HEIGHT, TILE_WIDTH} from '../Scenes/Battle/GameObjects/Tile';
+import {randomByLen} from '../Utils/inedx';
 
 export const ENTITY_WIDTH = 128;
 export const ENTITY_HEIGHT = 128;
 
-export default abstract class EntityManager extends Component{
+export default abstract class EntityManager extends Component {
   static componentName = 'EntityManager';
 
+  id: string = randomByLen(12);
   x: number;
   y: number;
   private _direction: DIRECTION_ENUM;

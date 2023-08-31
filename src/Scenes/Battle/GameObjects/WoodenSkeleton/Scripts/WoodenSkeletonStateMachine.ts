@@ -5,6 +5,7 @@ import StateMachine, {getInitParamsNumber, getInitParamsTrigger} from '../../../
 import IdleSubStateMachine from './IdleSubStateMachine';
 import AttackSubStateMachine from './AttackSubStateMachine';
 import WoodenSkeletonManager from './WoodenSkeletonManager';
+import DeathSubStateMachine from "./DeathSubStateMachine";
 
 
 export default class WoodenSkeletonStateMachine extends StateMachine {
@@ -26,6 +27,7 @@ export default class WoodenSkeletonStateMachine extends StateMachine {
   initParams() {
     this.params.set(PARAMS_NAME_ENUM.IDLE, getInitParamsTrigger());
     this.params.set(PARAMS_NAME_ENUM.ATTACK, getInitParamsTrigger());
+    this.params.set(PARAMS_NAME_ENUM.DEATH, getInitParamsTrigger());
     this.params.set(PARAMS_NAME_ENUM.DIRECTION, getInitParamsNumber());
   }
 
@@ -35,6 +37,8 @@ export default class WoodenSkeletonStateMachine extends StateMachine {
       new IdleSubStateMachine(this, spriteAnimation));
     this.stateMachines.set(PARAMS_NAME_ENUM.ATTACK,
       new AttackSubStateMachine(this, spriteAnimation));
+    this.stateMachines.set(PARAMS_NAME_ENUM.DEATH,
+      new DeathSubStateMachine(this, spriteAnimation));
   }
 
   initAnimationEvent() {
@@ -52,8 +56,8 @@ export default class WoodenSkeletonStateMachine extends StateMachine {
       case this.stateMachines.get(PARAMS_NAME_ENUM.IDLE):
         if (this.params.get(PARAMS_NAME_ENUM.ATTACK).value) {
           this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.ATTACK);
-        } else if (this.params.get(PARAMS_NAME_ENUM.IDLE).value) {
-          this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.IDLE);
+        } else if (this.params.get(PARAMS_NAME_ENUM.DEATH).value) {
+          this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.DEATH);
         } else {
           this.currentState = this.currentState;
         }

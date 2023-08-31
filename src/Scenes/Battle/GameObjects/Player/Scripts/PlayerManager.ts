@@ -61,13 +61,15 @@ export default class PlayerManager extends EntityManager {
       return;
     }
     if (this.state === ENTITY_STATE_ENUM.DEATH
-      || this.state === ENTITY_STATE_ENUM.AIRDEATH) {
+      || this.state === ENTITY_STATE_ENUM.AIRDEATH
+      || this.state === ENTITY_STATE_ENUM.ATTACK) {
       return;
     }
 
-    if (this.willAttack(inputDirection)) {
+    const id = this.willAttack(inputDirection);
+    if (id) {
       this.state = ENTITY_STATE_ENUM.ATTACK;
-      EventManager.Instance.emit(EVENT_ENUM.ATTACK_ENEMY);
+      EventManager.Instance.emit(EVENT_ENUM.ATTACK_ENEMY, id);
       return;
     }
 
@@ -78,35 +80,35 @@ export default class PlayerManager extends EntityManager {
     this.move(inputDirection);
   }
 
-  willAttack(inputDirection: CONTROLLER_ENUM) {
+  willAttack(inputDirection: CONTROLLER_ENUM) :string {
     const enemies = DataManager.Instance.enemies
       .filter(enemy => enemy.state !== ENTITY_STATE_ENUM.DEATH);
     for (let i = 0; i < enemies.length; i++) {
       const enemy = enemies[i];
-      const {x: enemyX, y: enemyY} = enemy;
+      const {x: enemyX, y: enemyY, id} = enemy;
       if (inputDirection === CONTROLLER_ENUM.TOP &&
         this.direction === DIRECTION_ENUM.TOP &&
         this.x === enemyX &&
         this.y - 2 === enemyY) {
-        return true;
+        return id;
       } else if (inputDirection === CONTROLLER_ENUM.BOTTOM &&
         this.direction === DIRECTION_ENUM.BOTTOM &&
         this.x === enemyX &&
         this.y + 2 === enemyY) {
-        return true;
+        return id;
       } else if (inputDirection === CONTROLLER_ENUM.LEFT &&
         this.direction === DIRECTION_ENUM.LEFT &&
         this.y === enemyY &&
         this.x - 2 === enemyX) {
-        return true;
+        return id;
       } else if (inputDirection === CONTROLLER_ENUM.TOP &&
         this.direction === DIRECTION_ENUM.TOP &&
         this.y === enemyY &&
         this.x + 2 === enemyX) {
-        return true;
+        return id;
       }
     }
-    return false;
+    return '';
   }
 
   move(inputDirection: CONTROLLER_ENUM) {
