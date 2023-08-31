@@ -64,11 +64,49 @@ export default class PlayerManager extends EntityManager {
       || this.state === ENTITY_STATE_ENUM.AIRDEATH) {
       return;
     }
+
+    if (this.willAttack(inputDirection)) {
+      this.state = ENTITY_STATE_ENUM.ATTACK;
+      EventManager.Instance.emit(EVENT_ENUM.ATTACK_ENEMY);
+      return;
+    }
+
     if (this.willBlock(inputDirection)) {
-      return
+      return;
     }
 
     this.move(inputDirection);
+  }
+
+  willAttack(inputDirection: CONTROLLER_ENUM) {
+    const enemies = DataManager.Instance.enemies
+      .filter(enemy => enemy.state !== ENTITY_STATE_ENUM.DEATH);
+    for (let i = 0; i < enemies.length; i++) {
+      const enemy = enemies[i];
+      const {x: enemyX, y: enemyY} = enemy;
+      if (inputDirection === CONTROLLER_ENUM.TOP &&
+        this.direction === DIRECTION_ENUM.TOP &&
+        this.x === enemyX &&
+        this.y - 2 === enemyY) {
+        return true;
+      } else if (inputDirection === CONTROLLER_ENUM.BOTTOM &&
+        this.direction === DIRECTION_ENUM.BOTTOM &&
+        this.x === enemyX &&
+        this.y + 2 === enemyY) {
+        return true;
+      } else if (inputDirection === CONTROLLER_ENUM.LEFT &&
+        this.direction === DIRECTION_ENUM.LEFT &&
+        this.y === enemyY &&
+        this.x - 2 === enemyX) {
+        return true;
+      } else if (inputDirection === CONTROLLER_ENUM.TOP &&
+        this.direction === DIRECTION_ENUM.TOP &&
+        this.y === enemyY &&
+        this.x + 2 === enemyX) {
+        return true;
+      }
+    }
+    return false;
   }
 
   move(inputDirection: CONTROLLER_ENUM) {

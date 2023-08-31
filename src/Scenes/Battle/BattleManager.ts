@@ -9,6 +9,7 @@ import {EVENT_ENUM} from '../../Enums';
 import Player from './GameObjects/Player';
 import WoodenSkeleton from "./GameObjects/WoodenSkeleton";
 import PlayerManager from "./GameObjects/Player/Scripts/PlayerManager";
+import WoodenSkeletonManager from "./GameObjects/WoodenSkeleton/Scripts/WoodenSkeletonManager";
 
 export default class BattleManager extends Component {
   static componentName = 'BattleManager'; // 设置组件的名字
@@ -26,8 +27,8 @@ export default class BattleManager extends Component {
     DataManager.Instance.mapRowCount = level.mapInfo.length;
     DataManager.Instance.mapColumnCount = level.mapInfo[0].length;
     this.generateTileMap();
-    this.generatePlayer();
     this.generateEnemies();
+    this.generatePlayer();
   }
 
   clearLevel() {
@@ -43,14 +44,16 @@ export default class BattleManager extends Component {
     this.adaptPos();
   }
 
-  generatePlayer(){
+  generatePlayer() {
     const player = Player();
     this.gameObject.addChild(player);
     DataManager.Instance.player = player.getComponent(PlayerManager);
   }
 
-  generateEnemies(){
-    this.gameObject.addChild(WoodenSkeleton());
+  generateEnemies() {
+    const enemy = WoodenSkeleton();
+    this.gameObject.addChild(enemy);
+    DataManager.Instance.enemies.push(enemy.getComponent(WoodenSkeletonManager));
   }
 
   adaptPos() {

@@ -750,4 +750,64 @@ export default [
     },
     preload: true,
   },
+  {
+    name: 'player_attack_top',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/attack_top.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/attack_top.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'player_attack_bottom',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/attack_bottom.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/attack_bottom.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'player_attack_left',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/attack_left.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/attack_left.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'player_attack_right',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/attack_right.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/attack_right.json',
+      }
+    },
+    preload: true,
+  },
 ];

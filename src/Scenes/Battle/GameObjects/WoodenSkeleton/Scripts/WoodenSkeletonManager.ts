@@ -17,6 +17,7 @@ export default class WoodenSkeletonManager extends EntityManager {
 
     EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.onChangeDirection, this);
     EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.onAttack, this);
+    EventManager.Instance.on(EVENT_ENUM.ATTACK_ENEMY, this.onDead, this);
   }
 
   start() {
@@ -55,5 +56,9 @@ export default class WoodenSkeletonManager extends EntityManager {
      this.state = ENTITY_STATE_ENUM.ATTACK;
      EventManager.Instance.emit(EVENT_ENUM.ATTACK_PLAYER, ENTITY_STATE_ENUM.DEATH);
     }
+  }
+
+  onDead(){
+    console.log('enemy dead')
   }
 }
