@@ -70,6 +70,7 @@ export default class PlayerManager extends EntityManager {
     if (id) {
       this.state = ENTITY_STATE_ENUM.ATTACK;
       EventManager.Instance.emit(EVENT_ENUM.ATTACK_ENEMY, id);
+      EventManager.Instance.emit(EVENT_ENUM.DOOR_OPEN);
       return;
     }
 

@@ -810,4 +810,184 @@ export default [
     },
     preload: true,
   },
+  {
+    name: 'woodenskeleton_death_top',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/woodenskeleton/death_top.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/woodenskeleton/death_top.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'woodenskeleton_death_bottom',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/woodenskeleton/death_bottom.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/woodenskeleton/death_bottom.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'woodenskeleton_death_left',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/woodenskeleton/death_left.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/woodenskeleton/death_left.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'woodenskeleton_death_right',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/woodenskeleton/death_right.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/woodenskeleton/death_right.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'door_idle_top',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/door/idle_top.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/door/idle_top.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'door_idle_bottom',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/door/idle_bottom.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/door/idle_bottom.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'door_idle_left',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/door/idle_left.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/door/idle_left.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'door_idle_right',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/door/idle_right.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/door/idle_right.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'door_death_top',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/door/death.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/door/death.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'door_death_bottom',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/door/death.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/door/death.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'door_death_left',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/door/death.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/door/death.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'door_death_right',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/door/death.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/door/death.json',
+      }
+    },
+    preload: true,
+  },
 ];

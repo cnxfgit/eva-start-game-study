@@ -3,6 +3,7 @@ import Singleton from '../Base/Singleton';
 import TileManager from "../Scenes/Battle/GameObjects/Tile/TileManager";
 import PlayerManager from "../Scenes/Battle/GameObjects/Player/Scripts/PlayerManager";
 import WoodenSkeletonManager from "../Scenes/Battle/GameObjects/WoodenSkeleton/Scripts/WoodenSkeletonManager";
+import DoorManager from "../Scenes/Battle/GameObjects/Door/Scripts/DoorManager";
 
 export default class DataManager extends Singleton {
   static get Instance() {
@@ -15,10 +16,12 @@ export default class DataManager extends Singleton {
   mapRowCount: number;
   mapColumnCount: number;
   player: PlayerManager;
+  door: DoorManager;
   enemies: Array<WoodenSkeletonManager>
 
   reset(){
     this.player = null;
+    this.door = null;
     this.enemies = [];
     this.mapInfo = [];
     this.tileInfo = [];
