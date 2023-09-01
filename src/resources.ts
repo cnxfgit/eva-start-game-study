@@ -990,4 +990,124 @@ export default [
     },
     preload: true,
   },
+  {
+    name: 'ironskeleton_idle_top',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/ironskeleton/idle_top.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/ironskeleton/idle_top.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'ironskeleton_idle_bottom',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/ironskeleton/idle_bottom.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/ironskeleton/idle_bottom.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'ironskeleton_idle_left',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/ironskeleton/idle_left.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/ironskeleton/idle_left.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'ironskeleton_idle_right',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/ironskeleton/idle_right.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/ironskeleton/idle_right.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'ironskeleton_death_left',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/ironskeleton/death_left.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/ironskeleton/death_left.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'ironskeleton_death_bottom',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/ironskeleton/death_bottom.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/ironskeleton/death_bottom.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'ironskeleton_death_left',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/ironskeleton/death_left.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/ironskeleton/death_left.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'ironskeleton_death_right',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/ironskeleton/death_right.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/ironskeleton/death_right.json',
+      }
+    },
+    preload: true,
+  },
 ];

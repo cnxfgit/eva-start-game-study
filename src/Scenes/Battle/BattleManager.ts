@@ -7,11 +7,13 @@ import {TILE_HEIGHT, TILE_WIDTH} from './GameObjects/Tile';
 import EventManager from '../../Runtime/EventManager';
 import {EVENT_ENUM} from '../../Enums';
 import Player from './GameObjects/Player';
-import WoodenSkeleton from "./GameObjects/WoodenSkeleton";
-import PlayerManager from "./GameObjects/Player/Scripts/PlayerManager";
-import WoodenSkeletonManager from "./GameObjects/WoodenSkeleton/Scripts/WoodenSkeletonManager";
-import Door from "./GameObjects/Door";
-import DoorManager from "./GameObjects/Door/Scripts/DoorManager";
+import WoodenSkeleton from './GameObjects/WoodenSkeleton';
+import PlayerManager from './GameObjects/Player/Scripts/PlayerManager';
+import WoodenSkeletonManager from './GameObjects/WoodenSkeleton/Scripts/WoodenSkeletonManager';
+import Door from './GameObjects/Door';
+import DoorManager from './GameObjects/Door/Scripts/DoorManager';
+import IronSkeleton from './GameObjects/IronSkeleton';
+import IronSkeletonManager from './GameObjects/IronSkeleton/Scripts/IronSkeletonManager';
 
 export default class BattleManager extends Component {
   static componentName = 'BattleManager'; // 设置组件的名字
@@ -60,9 +62,13 @@ export default class BattleManager extends Component {
   }
 
   generateEnemies() {
-    const enemy = WoodenSkeleton();
-    this.gameObject.addChild(enemy);
-    DataManager.Instance.enemies.push(enemy.getComponent(WoodenSkeletonManager));
+    const enemy1 = WoodenSkeleton();
+    this.gameObject.addChild(enemy1);
+    DataManager.Instance.enemies.push(enemy1.getComponent(WoodenSkeletonManager));
+
+    const enemy2 = IronSkeleton();
+    this.gameObject.addChild(enemy2);
+    DataManager.Instance.enemies.push(enemy2.getComponent(IronSkeletonManager));
   }
 
   adaptPos() {

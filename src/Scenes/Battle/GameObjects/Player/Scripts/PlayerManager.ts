@@ -25,6 +25,11 @@ export default class PlayerManager extends EntityManager {
     this.direction = DIRECTION_ENUM.TOP;
   }
 
+  onDestroy() {
+    EventManager.Instance.off(EVENT_ENUM.PLAYER_CTRL, this.inputHandler);
+    EventManager.Instance.off(EVENT_ENUM.ATTACK_PLAYER, this.onDead);
+  }
+
   update() {
     this.updateXY();
     super.update();

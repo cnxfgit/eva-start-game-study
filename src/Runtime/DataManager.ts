@@ -1,9 +1,9 @@
 import {ITile} from '../Levels';
 import Singleton from '../Base/Singleton';
-import TileManager from "../Scenes/Battle/GameObjects/Tile/TileManager";
-import PlayerManager from "../Scenes/Battle/GameObjects/Player/Scripts/PlayerManager";
-import WoodenSkeletonManager from "../Scenes/Battle/GameObjects/WoodenSkeleton/Scripts/WoodenSkeletonManager";
-import DoorManager from "../Scenes/Battle/GameObjects/Door/Scripts/DoorManager";
+import TileManager from '../Scenes/Battle/GameObjects/Tile/TileManager';
+import PlayerManager from '../Scenes/Battle/GameObjects/Player/Scripts/PlayerManager';
+import DoorManager from '../Scenes/Battle/GameObjects/Door/Scripts/DoorManager';
+import EnemyManager from '../Base/EnemyManager';
 
 export default class DataManager extends Singleton {
   static get Instance() {
@@ -17,7 +17,7 @@ export default class DataManager extends Singleton {
   mapColumnCount: number;
   player: PlayerManager;
   door: DoorManager;
-  enemies: Array<WoodenSkeletonManager>
+  enemies: Array<EnemyManager>
 
   reset(){
     this.player = null;

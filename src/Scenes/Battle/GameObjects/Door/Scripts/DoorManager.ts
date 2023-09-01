@@ -18,6 +18,10 @@ export default class DoorManager extends EntityManager {
     EventManager.Instance.on(EVENT_ENUM.DOOR_OPEN, this.onOpen, this);
   }
 
+  onDestroy() {
+    EventManager.Instance.off(EVENT_ENUM.DOOR_OPEN, this.onOpen);
+  }
+
   onOpen() {
     if (DataManager.Instance.enemies.every(enemy => enemy.state === ENTITY_STATE_ENUM.DEATH)
       && this.state !== ENTITY_STATE_ENUM.DEATH) {
