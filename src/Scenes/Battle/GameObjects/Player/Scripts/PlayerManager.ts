@@ -15,6 +15,7 @@ export default class PlayerManager extends EntityManager {
 
   init() {
     this.fsm = this.gameObject.addComponent(new PlayerStateMachine());
+    super.init();
     this.x = 2;
     this.y = 8;
     this.targetX = 2;
@@ -86,7 +87,7 @@ export default class PlayerManager extends EntityManager {
     this.move(inputDirection);
   }
 
-  willAttack(inputDirection: CONTROLLER_ENUM) :string {
+  willAttack(inputDirection: CONTROLLER_ENUM): string {
     const enemies = DataManager.Instance.enemies
       .filter(enemy => enemy.state !== ENTITY_STATE_ENUM.DEATH);
     for (let i = 0; i < enemies.length; i++) {
@@ -160,6 +161,10 @@ export default class PlayerManager extends EntityManager {
   willBlock(inputDirection: CONTROLLER_ENUM) {
     const {tileInfo, mapRowCount: row, mapColumnCount: column} = DataManager.Instance;
     const {targetX: x, targetY: y, direction} = this;
+    const {x: doorX, y: doorY, state: doorState} = DataManager.Instance.door;
+    const enemies = DataManager.Instance.enemies
+      .filter(enemy => enemy.state !== ENTITY_STATE_ENUM.DEATH);
+
     if (inputDirection === CONTROLLER_ENUM.TOP) {
       if (direction === DIRECTION_ENUM.TOP) {
         const playerNextY = y - 1;
@@ -171,6 +176,21 @@ export default class PlayerManager extends EntityManager {
         const weaponNextY = y - 2;
         const playerNextTile = tileInfo[x][playerNextY];
         const weaponNextTile = tileInfo[x][weaponNextY];
+
+        if (((x === doorX && playerNextY === doorY) || (x === doorX && weaponNextY === doorY))
+          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+          this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
+          return true;
+        }
+
+        for (let i = 0; i < enemies.length; i++) {
+          const {x: enemyX, y: enemyY} = enemies[i]
+          if ((x === enemyX && playerNextY === enemyY) ||
+            (x === enemyX && weaponNextY === enemyY)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
+            return true;
+          }
+        }
 
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
@@ -188,6 +208,21 @@ export default class PlayerManager extends EntityManager {
         const weaponNextY = y;
         const playerNextTile = tileInfo[x][playerNextY];
         const weaponNextTile = tileInfo[x][weaponNextY];
+
+        if (((x === doorX && playerNextY === doorY) || (x === doorX && weaponNextY === doorY))
+          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+          return true;
+        }
+
+        for (let i = 0; i < enemies.length; i++) {
+          const {x: enemyX, y: enemyY} = enemies[i]
+          if ((x === enemyX && playerNextY === enemyY) ||
+            (x === enemyX && weaponNextY === enemyY)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+            return true;
+          }
+        }
 
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
@@ -207,6 +242,21 @@ export default class PlayerManager extends EntityManager {
         const playerNextTile = tileInfo[x][playerNextY];
         const weaponNextTile = tileInfo[weaponNextX][weaponNextY];
 
+        if (((x === doorX && playerNextY === doorY) || (x - 1 === doorX && weaponNextY === doorY))
+          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
+          return true;
+        }
+
+        for (let i = 0; i < enemies.length; i++) {
+          const {x: enemyX, y: enemyY} = enemies[i]
+          if ((x === enemyX && playerNextY === enemyY) ||
+            (x - 1 === enemyX && weaponNextY === enemyY)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
+            return true;
+          }
+        }
+
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
@@ -224,6 +274,21 @@ export default class PlayerManager extends EntityManager {
         const weaponNextY = y - 1;
         const playerNextTile = tileInfo[x][playerNextY];
         const weaponNextTile = tileInfo[weaponNextX][weaponNextY];
+
+        if (((x === doorX && playerNextY === doorY) || (x + 1 === doorX && weaponNextY === doorY))
+          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
+          return true;
+        }
+
+        for (let i = 0; i < enemies.length; i++) {
+          const {x: enemyX, y: enemyY} = enemies[i]
+          if ((x === enemyX && playerNextY === enemyY) ||
+            (x + 1 === enemyX && weaponNextY === enemyY)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
+            return true;
+          }
+        }
 
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
@@ -244,6 +309,21 @@ export default class PlayerManager extends EntityManager {
         const playerNextTile = tileInfo[x][playerNextY];
         const weaponNextTile = tileInfo[x][weaponNextY];
 
+        if (((x === doorX && playerNextY === doorY) || (x === doorX && weaponNextY === doorY))
+          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+          return true;
+        }
+
+        for (let i = 0; i < enemies.length; i++) {
+          const {x: enemyX, y: enemyY} = enemies[i]
+          if ((x === enemyX && playerNextY === enemyY) ||
+            (x === enemyX && weaponNextY === enemyY)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+            return true;
+          }
+        }
+
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
@@ -260,6 +340,21 @@ export default class PlayerManager extends EntityManager {
         const weaponNextY = y + 2;
         const playerNextTile = tileInfo[x][playerNextY];
         const weaponNextTile = tileInfo[x][weaponNextY];
+
+        if (((x === doorX && playerNextY === doorY) || (x === doorX && weaponNextY === doorY))
+          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+          this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
+          return true;
+        }
+
+        for (let i = 0; i < enemies.length; i++) {
+          const {x: enemyX, y: enemyY} = enemies[i]
+          if ((x === enemyX && playerNextY === enemyY) ||
+            (x === enemyX && weaponNextY === enemyY)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
+            return true;
+          }
+        }
 
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
@@ -279,6 +374,21 @@ export default class PlayerManager extends EntityManager {
         const playerNextTile = tileInfo[x][playerNextY];
         const weaponNextTile = tileInfo[weaponNextX][weaponNextY];
 
+        if (((x === doorX && playerNextY === doorY) || (x - 1 === doorX && weaponNextY === doorY))
+          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
+          return true;
+        }
+
+        for (let i = 0; i < enemies.length; i++) {
+          const {x: enemyX, y: enemyY} = enemies[i]
+          if ((x === enemyX && playerNextY === enemyY) ||
+            (x - 1 === enemyX && weaponNextY === enemyY)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
+            return true;
+          }
+        }
+
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
@@ -296,6 +406,21 @@ export default class PlayerManager extends EntityManager {
         const weaponNextY = y + 1;
         const playerNextTile = tileInfo[x][playerNextY];
         const weaponNextTile = tileInfo[weaponNextX][weaponNextY];
+
+        if (((x === doorX && playerNextY === doorY) || (x + 1 === doorX && weaponNextY === doorY))
+          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
+          return true;
+        }
+
+        for (let i = 0; i < enemies.length; i++) {
+          const {x: enemyX, y: enemyY} = enemies[i]
+          if ((x === enemyX && playerNextY === enemyY) ||
+            (x + 1 === enemyX && weaponNextY === enemyY)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
+            return true;
+          }
+        }
 
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
@@ -317,6 +442,22 @@ export default class PlayerManager extends EntityManager {
         const playerNextTile = tileInfo[playerNextX][y];
         const weaponNextTile = tileInfo[weaponNextX][weaponNextY];
 
+        if (((y === doorY && playerNextX === doorX) || (y + 1 === doorY && weaponNextY === doorY))
+          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
+          return true;
+        }
+
+        for (let i = 0; i < enemies.length; i++) {
+          const {x: enemyX, y: enemyY} = enemies[i]
+          if ((y === enemyY && playerNextX === enemyX) ||
+            (y + 1 === enemyY && weaponNextY === enemyY)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
+            return true;
+          }
+        }
+
+
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
@@ -334,6 +475,22 @@ export default class PlayerManager extends EntityManager {
         const weaponNextY = y + 1;
         const playerNextTile = tileInfo[playerNextX][y];
         const weaponNextTile = tileInfo[weaponNextX][weaponNextY];
+
+        if (((y === doorY && playerNextX === doorX) || (y - 1 === doorY && weaponNextY === doorY))
+          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
+          return true;
+        }
+
+        for (let i = 0; i < enemies.length; i++) {
+          const {x: enemyX, y: enemyY} = enemies[i]
+          if ((y === enemyY && playerNextX === enemyX) ||
+            (y - 1 === enemyY && weaponNextY === enemyY)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
+            return true;
+          }
+        }
+
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
@@ -351,6 +508,21 @@ export default class PlayerManager extends EntityManager {
         const playerNextTile = tileInfo[playerNextX][y];
         const weaponNextTile = tileInfo[weaponNextX][y];
 
+        if (((y === doorY && playerNextX === doorX) || (y === doorY && weaponNextX === doorX))
+          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+          this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
+          return true;
+        }
+
+        for (let i = 0; i < enemies.length; i++) {
+          const {x: enemyX, y: enemyY} = enemies[i]
+          if ((y === enemyY && playerNextX === enemyX) ||
+            (y === enemyY && weaponNextX === enemyX)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
+            return true;
+          }
+        }
+
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
@@ -367,6 +539,21 @@ export default class PlayerManager extends EntityManager {
         const weaponNextX = x;
         const playerNextTile = tileInfo[playerNextX][y];
         const weaponNextTile = tileInfo[weaponNextX][y];
+
+        if (((y === doorY && playerNextX === doorX) || (y === doorY && weaponNextX === doorX))
+          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+          return true;
+        }
+
+        for (let i = 0; i < enemies.length; i++) {
+          const {x: enemyX, y: enemyY} = enemies[i]
+          if ((y === enemyY && playerNextX === enemyX) ||
+            (y === enemyY && weaponNextX === enemyX)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+            return true;
+          }
+        }
 
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
@@ -388,6 +575,21 @@ export default class PlayerManager extends EntityManager {
         const playerNextTile = tileInfo[playerNextX][y];
         const weaponNextTile = tileInfo[weaponNextX][weaponNextY];
 
+        if (((y === doorY && playerNextX === doorX) || (y - 1 === doorY && weaponNextX === doorX))
+          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
+          return true;
+        }
+
+        for (let i = 0; i < enemies.length; i++) {
+          const {x: enemyX, y: enemyY} = enemies[i]
+          if ((y === enemyY && playerNextX === enemyX) ||
+            (y - 1 === enemyY && weaponNextX === enemyX)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
+            return true;
+          }
+        }
+
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
@@ -405,6 +607,23 @@ export default class PlayerManager extends EntityManager {
         const weaponNextY = y - 1;
         const playerNextTile = tileInfo[playerNextX][y];
         const weaponNextTile = tileInfo[weaponNextX][weaponNextY];
+
+        if (((y === doorY && playerNextX === doorX) || (y + 1 === doorY && weaponNextX === doorX))
+          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
+          return true;
+        }
+
+        for (let i = 0; i < enemies.length; i++) {
+          const {x: enemyX, y: enemyY} = enemies[i]
+          if ((y === enemyY && playerNextX === enemyX) ||
+            (y + 1 === enemyY && weaponNextX === enemyX)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
+            return true;
+          }
+        }
+
+
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
@@ -422,6 +641,21 @@ export default class PlayerManager extends EntityManager {
         const playerNextTile = tileInfo[playerNextX][y];
         const weaponNextTile = tileInfo[weaponNextX][y];
 
+        if (((y === doorY && playerNextX === doorX) || (y === doorY && weaponNextX === doorX))
+          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+          return true;
+        }
+
+        for (let i = 0; i < enemies.length; i++) {
+          const {x: enemyX, y: enemyY} = enemies[i]
+          if ((y === enemyY && playerNextX === enemyX) ||
+            (y === enemyY && weaponNextX === enemyX)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+            return true;
+          }
+        }
+
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
@@ -438,6 +672,21 @@ export default class PlayerManager extends EntityManager {
         const weaponNextX = x + 2;
         const playerNextTile = tileInfo[playerNextX][y];
         const weaponNextTile = tileInfo[weaponNextX][y];
+
+        if (((y === doorY && playerNextX === doorX) || (y === doorY && weaponNextX === doorX))
+          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+          this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
+          return true;
+        }
+
+        for (let i = 0; i < enemies.length; i++) {
+          const {x: enemyX, y: enemyY} = enemies[i]
+          if ((y === enemyY && playerNextX === enemyX) ||
+            (y === enemyY && weaponNextX === enemyX)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
+            return true;
+          }
+        }
 
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
@@ -462,6 +711,22 @@ export default class PlayerManager extends EntityManager {
         nextY = y - 1;
       }
 
+      if (((doorX === nextX && doorY === y) || (doorY === nextY && doorX === x)
+        || doorX === nextX && doorY === nextY) && doorState !== ENTITY_STATE_ENUM.DEATH) {
+        this.state = ENTITY_STATE_ENUM.BLOCKTURNLEFT;
+        return true;
+      }
+
+      for (let i = 0; i < enemies.length; i++) {
+        const {x: enemyX, y: enemyY} = enemies[i]
+        if ((x === enemyX && nextY === enemyY) ||
+          (nextX === enemyX && y === enemyY) ||
+          (nextX === enemyX && nextY === enemyY)) {
+          this.state = ENTITY_STATE_ENUM.BLOCKTURNLEFT;
+          return true;
+        }
+      }
+
       if ((!tileInfo[x]?.[nextY] || tileInfo[x]?.[nextY]?.turnable) &&
         (!tileInfo[nextX]?.[y] || tileInfo[nextX]?.[y]?.turnable) &&
         (!tileInfo[nextX]?.[nextY] || tileInfo[nextX]?.[nextY]?.turnable)) {
@@ -484,6 +749,22 @@ export default class PlayerManager extends EntityManager {
       } else if (direction === DIRECTION_ENUM.RIGHT) {
         nextX = x + 1;
         nextY = y + 1;
+      }
+
+      if (((doorX === nextX && doorY === y) || (doorY === nextY && doorX === x)
+        || doorX === nextX && doorY === nextY) && doorState !== ENTITY_STATE_ENUM.DEATH) {
+        this.state = ENTITY_STATE_ENUM.BLOCKTURNRIGHT;
+        return true;
+      }
+
+      for (let i = 0; i < enemies.length; i++) {
+        const {x: enemyX, y: enemyY} = enemies[i]
+        if ((x === enemyX && nextY === enemyY) ||
+          (nextX === enemyX && y === enemyY) ||
+          (nextX === enemyX && nextY === enemyY)) {
+          this.state = ENTITY_STATE_ENUM.BLOCKTURNRIGHT;
+          return true;
+        }
       }
 
       if ((!tileInfo[x]?.[nextY] || tileInfo[x]?.[nextY]?.turnable) &&

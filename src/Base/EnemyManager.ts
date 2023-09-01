@@ -8,6 +8,7 @@ export default class EnemyManager extends EntityManager {
   static componentName = 'IronSkeletonManager';
 
   init() {
+    super.init();
     EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.onChangeDirection, this);
     EventManager.Instance.on(EVENT_ENUM.ATTACK_ENEMY, this.onDead, this);
   }

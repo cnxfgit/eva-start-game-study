@@ -17,6 +17,10 @@ export default abstract class EntityManager extends Component {
   private _state: ENTITY_STATE_ENUM;
   fsm: PlayerStateMachine;
 
+  init() {
+
+  }
+
   get direction() {
     return this._direction;
   }
