@@ -14,6 +14,7 @@ import BlockTurnRightStateMachine from "./BlockTurnRightStateMachine";
 import PlayerManager from "./PlayerManager";
 import DeathSubStateMachine from "./DeathSubStateMachine";
 import AttackSubStateMachine from "./AttackSubStateMachine";
+import AirDeathSubStateMachine from "./AirDeathSubStateMachine";
 
 
 export default class PlayerStateMachine extends StateMachine {
@@ -70,6 +71,8 @@ export default class PlayerStateMachine extends StateMachine {
       new BlockTurnRightStateMachine(this, spriteAnimation));
     this.stateMachines.set(PARAMS_NAME_ENUM.DEATH,
       new DeathSubStateMachine(this, spriteAnimation));
+    this.stateMachines.set(PARAMS_NAME_ENUM.AIRDEATH,
+      new AirDeathSubStateMachine(this, spriteAnimation));
     this.stateMachines.set(PARAMS_NAME_ENUM.ATTACK,
       new AttackSubStateMachine(this, spriteAnimation));
   }
@@ -96,9 +99,12 @@ export default class PlayerStateMachine extends StateMachine {
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKTURNLEFT):
       case this.stateMachines.get(PARAMS_NAME_ENUM.BLOCKTURNRIGHT):
       case this.stateMachines.get(PARAMS_NAME_ENUM.DEATH):
+      case this.stateMachines.get(PARAMS_NAME_ENUM.AIRDEATH):
       case this.stateMachines.get(PARAMS_NAME_ENUM.ATTACK):
         if (this.params.get(PARAMS_NAME_ENUM.ATTACK).value) {
           this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.ATTACK);
+        }  else if (this.params.get(PARAMS_NAME_ENUM.AIRDEATH).value) {
+          this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.AIRDEATH);
         } else if (this.params.get(PARAMS_NAME_ENUM.DEATH).value) {
           this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.DEATH);
         } else if (this.params.get(PARAMS_NAME_ENUM.TURNLEFT).value) {

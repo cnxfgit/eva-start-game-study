@@ -1110,4 +1110,109 @@ export default [
     },
     preload: true,
   },
+  {
+    name: 'burst_idle',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/burst/idle.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/burst/idle.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'burst_attack',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/burst/attack.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/burst/attack.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'burst_death',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/burst/death.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/burst/death.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'player_air_death_top',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/air_death_top.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/air_death_top.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'player_air_death_bottom',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/air_death_bottom.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/air_death_bottom.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'player_air_death_left',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/air_death_left.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/air_death_left.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'player_air_death_right',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/player/air_death_right.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/player/air_death_right.json',
+      }
+    },
+    preload: true,
+  },
 ];

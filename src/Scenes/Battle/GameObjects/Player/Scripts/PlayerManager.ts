@@ -3,6 +3,8 @@ import {CONTROLLER_ENUM, DIRECTION_ENUM, ENTITY_STATE_ENUM, EVENT_ENUM,} from '.
 import PlayerStateMachine from './PlayerStateMachine';
 import EntityManager from '../../../../../Base/EntityManager';
 import DataManager from '../../../../../Runtime/DataManager';
+import EnemyManager from "../../../../../Base/EnemyManager";
+import BurstManager from "../../Burst/Scripts/BurstManager";
 
 export default class PlayerManager extends EntityManager {
   static componentName = 'PlayerManager';
@@ -162,8 +164,10 @@ export default class PlayerManager extends EntityManager {
     const {tileInfo, mapRowCount: row, mapColumnCount: column} = DataManager.Instance;
     const {targetX: x, targetY: y, direction} = this;
     const {x: doorX, y: doorY, state: doorState} = DataManager.Instance.door;
-    const enemies = DataManager.Instance.enemies
+    const enemies: EnemyManager[] = DataManager.Instance.enemies
       .filter(enemy => enemy.state !== ENTITY_STATE_ENUM.DEATH);
+    const bursts: BurstManager[] = DataManager.Instance.bursts
+      .filter(burst => burst.state !== ENTITY_STATE_ENUM.DEATH);
 
     if (inputDirection === CONTROLLER_ENUM.TOP) {
       if (direction === DIRECTION_ENUM.TOP) {
@@ -190,6 +194,11 @@ export default class PlayerManager extends EntityManager {
             this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
             return true;
           }
+        }
+
+        if (bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
+        (!weaponNextTile || weaponNextTile.turnable)) {
+          return false;
         }
 
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
@@ -222,6 +231,11 @@ export default class PlayerManager extends EntityManager {
             this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
             return true;
           }
+        }
+
+        if (bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
+          (!weaponNextTile || weaponNextTile.turnable)) {
+          return false;
         }
 
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
@@ -257,6 +271,11 @@ export default class PlayerManager extends EntityManager {
           }
         }
 
+        if (bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
+          (!weaponNextTile || weaponNextTile.turnable)) {
+          return false;
+        }
+
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
@@ -288,6 +307,11 @@ export default class PlayerManager extends EntityManager {
             this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
             return true;
           }
+        }
+
+        if (bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
+          (!weaponNextTile || weaponNextTile.turnable)) {
+          return false;
         }
 
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
@@ -324,6 +348,11 @@ export default class PlayerManager extends EntityManager {
           }
         }
 
+        if (bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
+          (!weaponNextTile || weaponNextTile.turnable)) {
+          return false;
+        }
+
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
@@ -354,6 +383,11 @@ export default class PlayerManager extends EntityManager {
             this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
             return true;
           }
+        }
+
+        if (bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
+          (!weaponNextTile || weaponNextTile.turnable)) {
+          return false;
         }
 
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
@@ -389,6 +423,11 @@ export default class PlayerManager extends EntityManager {
           }
         }
 
+        if (bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
+          (!weaponNextTile || weaponNextTile.turnable)) {
+          return false;
+        }
+
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
@@ -420,6 +459,11 @@ export default class PlayerManager extends EntityManager {
             this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
             return true;
           }
+        }
+
+        if (bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
+          (!weaponNextTile || weaponNextTile.turnable)) {
+          return false;
         }
 
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
@@ -457,6 +501,10 @@ export default class PlayerManager extends EntityManager {
           }
         }
 
+        if (bursts.some(burst => burst.y === y && burst.x === playerNextX) &&
+          (!weaponNextTile || weaponNextTile.turnable)) {
+          return false;
+        }
 
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
@@ -491,6 +539,11 @@ export default class PlayerManager extends EntityManager {
           }
         }
 
+        if (bursts.some(burst => burst.y === y && burst.x === playerNextX) &&
+          (!weaponNextTile || weaponNextTile.turnable)) {
+          return false;
+        }
+
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
@@ -523,6 +576,11 @@ export default class PlayerManager extends EntityManager {
           }
         }
 
+        if (bursts.some(burst => burst.y === y && burst.x === playerNextX) &&
+          (!weaponNextTile || weaponNextTile.turnable)) {
+          return false;
+        }
+
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
@@ -553,6 +611,11 @@ export default class PlayerManager extends EntityManager {
             this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
             return true;
           }
+        }
+
+        if (bursts.some(burst => burst.y === y && burst.x === playerNextX) &&
+          (!weaponNextTile || weaponNextTile.turnable)) {
+          return false;
         }
 
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
@@ -590,6 +653,11 @@ export default class PlayerManager extends EntityManager {
           }
         }
 
+        if (bursts.some(burst => burst.y === y && burst.x === playerNextX) &&
+          (!weaponNextTile || weaponNextTile.turnable)) {
+          return false;
+        }
+
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
@@ -623,6 +691,10 @@ export default class PlayerManager extends EntityManager {
           }
         }
 
+        if (bursts.some(burst => burst.y === y && burst.x === playerNextX) &&
+          (!weaponNextTile || weaponNextTile.turnable)) {
+          return false;
+        }
 
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
@@ -656,6 +728,11 @@ export default class PlayerManager extends EntityManager {
           }
         }
 
+        if (bursts.some(burst => burst.y === y && burst.x === playerNextX) &&
+          (!weaponNextTile || weaponNextTile.turnable)) {
+          return false;
+        }
+
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
           // nothing
         } else {
@@ -686,6 +763,11 @@ export default class PlayerManager extends EntityManager {
             this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
             return true;
           }
+        }
+
+        if (bursts.some(burst => burst.y === y && burst.x === playerNextX) &&
+          (!weaponNextTile || weaponNextTile.turnable)) {
+          return false;
         }
 
         if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
