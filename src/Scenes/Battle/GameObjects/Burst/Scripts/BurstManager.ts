@@ -1,4 +1,4 @@
-import {ENTITY_STATE_ENUM, EVENT_ENUM,} from '../../../../../Enums';
+import {ENTITY_STATE_ENUM, EVENT_ENUM, SHAKE_TYPE_ENUM,} from '../../../../../Enums';
 import EntityManager from '../../../../../Base/EntityManager';
 import EventManager from '../../../../../Runtime/EventManager';
 import BurstStateMachine from './BurstStateMachine';
@@ -34,14 +34,14 @@ export default class BurstManager extends EntityManager {
     const {x: playerX, y: palyerY} = DataManager.Instance.player;
     if (this.x === playerX && this.y === palyerY && this.state === ENTITY_STATE_ENUM.IDLE) {
       this.state = ENTITY_STATE_ENUM.ATTACK;
-    } else if (this.state === ENTITY_STATE_ENUM.ATTACK){
+    } else if (this.state === ENTITY_STATE_ENUM.ATTACK) {
       this.state = ENTITY_STATE_ENUM.DEATH;
+      EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.BOTTOM);
       if (this.x === playerX && this.y === palyerY) {
         EventManager.Instance.emit(EVENT_ENUM.ATTACK_PLAYER, ENTITY_STATE_ENUM.AIRDEATH);
       }
     }
   }
-
 
 
 }

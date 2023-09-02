@@ -1,4 +1,4 @@
-import {ENTITY_STATE_ENUM, PARAMS_NAME_ENUM} from '../../../../../Enums';
+import {ENTITY_STATE_ENUM, EVENT_ENUM, PARAMS_NAME_ENUM, SHAKE_TYPE_ENUM} from '../../../../../Enums';
 import {ANIMATION_SPEED} from '../../../../../Base/State';
 import {SpriteAnimation} from '@eva/plugin-renderer-sprite-animation';
 import IdleSubStateMachine from './IdleSubStateMachine';
@@ -15,6 +15,7 @@ import PlayerManager from "./PlayerManager";
 import DeathSubStateMachine from "./DeathSubStateMachine";
 import AttackSubStateMachine from "./AttackSubStateMachine";
 import AirDeathSubStateMachine from "./AirDeathSubStateMachine";
+import EventManager from "../../../../../Runtime/EventManager";
 
 
 export default class PlayerStateMachine extends StateMachine {
@@ -85,6 +86,21 @@ export default class PlayerStateMachine extends StateMachine {
         this.gameObject.getComponent(PlayerManager).state = ENTITY_STATE_ENUM.IDLE;
       }
     });
+
+    spriteAnimation.on('frameChange', () => {
+      if (spriteAnimation.resource.startsWith('player_attack') &&
+        spriteAnimation.currentFrame === 4) {
+        if (spriteAnimation.resource.startsWith('player_attack_top')) {
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.TOP);
+        } else if (spriteAnimation.resource.startsWith('player_attack_bottom')) {
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.BOTTOM);
+        } else if (spriteAnimation.resource.startsWith('player_attack_left')) {
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.LEFT);
+        } else if (spriteAnimation.resource.startsWith('player_attack_right')) {
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.RIGHT);
+        }
+      }
+    });
   }
 
   run() {
@@ -103,7 +119,7 @@ export default class PlayerStateMachine extends StateMachine {
       case this.stateMachines.get(PARAMS_NAME_ENUM.ATTACK):
         if (this.params.get(PARAMS_NAME_ENUM.ATTACK).value) {
           this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.ATTACK);
-        }  else if (this.params.get(PARAMS_NAME_ENUM.AIRDEATH).value) {
+        } else if (this.params.get(PARAMS_NAME_ENUM.AIRDEATH).value) {
           this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.AIRDEATH);
         } else if (this.params.get(PARAMS_NAME_ENUM.DEATH).value) {
           this.currentState = this.stateMachines.get(PARAMS_NAME_ENUM.DEATH);
