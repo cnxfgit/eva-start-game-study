@@ -1,15 +1,15 @@
 import { GameObject } from '@eva/eva.js';
 import { Sprite } from '@eva/plugin-renderer-sprite';
 import { START_BUTTON_HEIGHT, START_BUTTON_WIDTH } from './Menu';
-import { EVENT_ENUM } from '../../../../Enums';
 import EventManager from '../../../../Runtime/EventManager';
+import { EVENT_ENUM } from '../../../../Enums';
 import { Event } from '@eva/plugin-renderer-event';
 
-const UndoButton = () => {
+const RestartButton = () => {
   const go = new GameObject('restartButton', {
     size: { width: START_BUTTON_WIDTH, height: START_BUTTON_HEIGHT },
     position: {
-      x: -90,
+      x: 0,
       y: 20,
     },
     origin: {
@@ -25,13 +25,13 @@ const UndoButton = () => {
   go.addComponent(
     new Sprite({
       resource: 'ctrl',
-      spriteName: 'ctrl (9).png',
+      spriteName: 'ctrl (8).png',
     }),
   );
 
   const eventManager = go.addComponent(new Event());
   const touchHandler = () => {
-    EventManager.Instance.emit(EVENT_ENUM.REVOKE_STEP);
+    EventManager.Instance.emit(EVENT_ENUM.RESTART_LEVEL);
   };
   eventManager.on('touchend', touchHandler);
   eventManager.on('touchendoutside', touchHandler);
@@ -39,4 +39,4 @@ const UndoButton = () => {
   return go;
 };
 
-export default UndoButton;
+export default RestartButton;

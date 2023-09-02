@@ -6,7 +6,7 @@ import Controller from './GameObjects/Controller';
 import BattleManager from './BattleManager';
 import {Render} from '@eva/plugin-renderer-render';
 import FaderManager from '../../Runtime/FaderManager';
-import Menu from './GameObjects/Menu';
+import Menu from './GameObjects/Menu/Menu';
 
 const BattleScene = () => {
   const scene = new Scene('BattleScene', {

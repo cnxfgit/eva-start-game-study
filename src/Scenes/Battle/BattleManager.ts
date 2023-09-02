@@ -2,7 +2,7 @@ import {Component} from '@eva/eva.js';
 import TileMap from './GameObjects/TileMap';
 import levels, {ILevel} from '../../Levels';
 import DataManager, {IRecord} from '../../Runtime/DataManager';
-import {SCREEN_HEIGHT, SCREEN_WIDTH} from '../../index';
+import {game, SCREEN_HEIGHT, SCREEN_WIDTH} from '../../index';
 import {TILE_HEIGHT, TILE_WIDTH} from './GameObjects/Tile';
 import EventManager from '../../Runtime/EventManager';
 import {DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM, SHAKE_TYPE_ENUM} from '../../Enums';
@@ -21,6 +21,7 @@ import SpikesManager from './GameObjects/Spikes/Scripts/SpikesManager';
 import Smoke from './GameObjects/Smoke';
 import SmokeManager from './GameObjects/Smoke/Scripts/SmokeManager';
 import FaderManager from '../../Runtime/FaderManager';
+import Menu from '../Menu';
 
 export default class BattleManager extends Component {
   static componentName = 'BattleManager'; // 设置组件的名字
@@ -41,6 +42,19 @@ export default class BattleManager extends Component {
     EventManager.Instance.on(EVENT_ENUM.SCREEN_SHAKE, this.onShake, this);
     EventManager.Instance.on(EVENT_ENUM.RECORD_STEP, this.record, this);
     EventManager.Instance.on(EVENT_ENUM.REVOKE_STEP, this.revoke, this);
+    EventManager.Instance.on(EVENT_ENUM.RESTART_LEVEL, this.initLevel, this);
+  }
+
+  onDestroy() {
+    DataManager.Instance.levelIndex = 1;
+
+    EventManager.Instance.off(EVENT_ENUM.NEXT_LEVEL, this.nextLevel)
+    EventManager.Instance.off(EVENT_ENUM.PLAYER_MOVE_END, this.checkArrived)
+    EventManager.Instance.off(EVENT_ENUM.SHOW_SMOKE, this.generateSmoke);
+    EventManager.Instance.off(EVENT_ENUM.SCREEN_SHAKE, this.onShake);
+    EventManager.Instance.off(EVENT_ENUM.RECORD_STEP, this.record);
+    EventManager.Instance.off(EVENT_ENUM.REVOKE_STEP, this.revoke);
+    EventManager.Instance.off(EVENT_ENUM.RESTART_LEVEL, this.initLevel);
   }
 
   start() {
@@ -97,7 +111,7 @@ export default class BattleManager extends Component {
       } else {
         await FaderManager.Instance.mask();
       }
-
+      this.isShaking = false;
       this.clearLevel();
       this.level = level;
       DataManager.Instance.mapInfo = level.mapInfo;
@@ -110,6 +124,13 @@ export default class BattleManager extends Component {
       this.generateSpikes();
       this.generatePlayer();
       await FaderManager.Instance.fadeOut();
+      this.hasInit = true;
+    } else {
+      await FaderManager.Instance.fadeIn();
+      game.scene.destroy();
+      game.loadScene({
+        scene: Menu()
+      })
     }
   }
 
