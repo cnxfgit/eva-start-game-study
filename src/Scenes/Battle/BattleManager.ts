@@ -30,6 +30,7 @@ export default class BattleManager extends Component {
   oldFrame: number = 0;
   oldPos: { x: number, y: number } = {x: 0, y: 0}
   shakeType: SHAKE_TYPE_ENUM;
+  hasInit: boolean = false;
 
   init() {
     DataManager.Instance.levelIndex = 1;
@@ -91,7 +92,12 @@ export default class BattleManager extends Component {
   async initLevel() {
     const level = levels[`level${DataManager.Instance.levelIndex}`]
     if (level) {
-      await FaderManager.Instance.fadeIn();
+      if (this.hasInit) {
+        await FaderManager.Instance.fadeIn();
+      } else {
+        await FaderManager.Instance.mask();
+      }
+
       this.clearLevel();
       this.level = level;
       DataManager.Instance.mapInfo = level.mapInfo;
@@ -241,10 +247,8 @@ export default class BattleManager extends Component {
     const record = DataManager.Instance.records.pop()
     if (record) {
       const {player, spikes, enemies, door, bursts} = record;
-      DataManager.Instance.player.x = player.x;
-      DataManager.Instance.player.y = player.y;
-      DataManager.Instance.player.targetX = player.x;
-      DataManager.Instance.player.targetY = player.y;
+      DataManager.Instance.player.x = DataManager.Instance.player.targetX = player.x;
+      DataManager.Instance.player.y = DataManager.Instance.player.targetY = player.y;
       DataManager.Instance.player.state = player.state;
       DataManager.Instance.player.direction = player.direction;
 
