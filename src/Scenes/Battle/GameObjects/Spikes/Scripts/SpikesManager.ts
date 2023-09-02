@@ -1,8 +1,16 @@
 import {Component} from '@eva/eva.js';
 import {randomByLen} from '../../../../../Utils/inedx';
-import {ENTITY_TYPE_ENUM, PARAMS_NAME_ENUM, SPIKES_TYPE_MAP_TOTAL_COUNT} from '../../../../../Enums';
+import {
+  ENTITY_STATE_ENUM,
+  ENTITY_TYPE_ENUM,
+  EVENT_ENUM,
+  PARAMS_NAME_ENUM,
+  SPIKES_TYPE_MAP_TOTAL_COUNT
+} from '../../../../../Enums';
 import {TILE_HEIGHT, TILE_WIDTH} from '../../Tile';
 import SpikesStateMachine from './SpikesStateMachine';
+import EventManager from '../../../../../Runtime/EventManager';
+import DataManager from '../../../../../Runtime/DataManager';
 
 export default class SpikesManager extends Component {
   static componentName = 'SpikesManager';
@@ -37,11 +45,35 @@ export default class SpikesManager extends Component {
     this.fsm = this.gameObject.addComponent(new SpikesStateMachine());
     this.x = 3;
     this.y = 7;
-    this.type = ENTITY_TYPE_ENUM.SPIKES_FOUR;
+    this.type = ENTITY_TYPE_ENUM.SPIKES_ONE;
     this.totalCount = SPIKES_TYPE_MAP_TOTAL_COUNT[this.type];
     this.count = 0;
+    EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.onLoop, this);
   }
 
+  onDestroy() {
+    EventManager.Instance.off(EVENT_ENUM.PLAYER_MOVE_END, this.onLoop);
+  }
+
+  onLoop() {
+    if (this.count === this.totalCount) {
+      this.count = 1;
+    } else {
+      this.count++;
+    }
+    this.onAttack();
+  }
+
+  onAttack() {
+    const {x: playerX, y: playerY} = DataManager.Instance.player;
+    if (this.count === this.totalCount && this.x === playerX && this.y === playerY) {
+      EventManager.Instance.emit(EVENT_ENUM.ATTACK_PLAYER, ENTITY_STATE_ENUM.DEATH);
+    }
+  }
+
+  backZero() {
+    this.count = 0;
+  }
 
   update() {
     this.gameObject.transform.position.x = this.x * TILE_WIDTH - 1.5 * TILE_WIDTH;

@@ -3,8 +3,8 @@ import {CONTROLLER_ENUM, DIRECTION_ENUM, ENTITY_STATE_ENUM, EVENT_ENUM,} from '.
 import PlayerStateMachine from './PlayerStateMachine';
 import EntityManager from '../../../../../Base/EntityManager';
 import DataManager from '../../../../../Runtime/DataManager';
-import EnemyManager from "../../../../../Base/EnemyManager";
-import BurstManager from "../../Burst/Scripts/BurstManager";
+import EnemyManager from '../../../../../Base/EnemyManager';
+import BurstManager from '../../Burst/Scripts/BurstManager';
 
 export default class PlayerManager extends EntityManager {
   static componentName = 'PlayerManager';
@@ -160,474 +160,626 @@ export default class PlayerManager extends EntityManager {
     }
   }
 
-  willBlock(inputDirection: CONTROLLER_ENUM) {
-    const {tileInfo, mapRowCount: row, mapColumnCount: column} = DataManager.Instance;
-    const {targetX: x, targetY: y, direction} = this;
-    const {x: doorX, y: doorY, state: doorState} = DataManager.Instance.door;
-    const enemies: EnemyManager[] = DataManager.Instance.enemies
-      .filter(enemy => enemy.state !== ENTITY_STATE_ENUM.DEATH);
-    const bursts: BurstManager[] = DataManager.Instance.bursts
-      .filter(burst => burst.state !== ENTITY_STATE_ENUM.DEATH);
+  willBlock(type: CONTROLLER_ENUM) {
+    const { targetX: x, targetY: y, direction } = this;
+    const { tileInfo: tileInfo } = DataManager.Instance;
+    const enemies: EnemyManager[] = DataManager.Instance.enemies.filter(
+      (enemy: EnemyManager) => enemy.state !== ENTITY_STATE_ENUM.DEATH,
+    );
+    const { x: doorX, y: doorY, state: doorState } = DataManager.Instance.door;
+    const bursts: BurstManager[] = DataManager.Instance.bursts.filter(
+      (burst: BurstManager) => burst.state !== ENTITY_STATE_ENUM.DEATH,
+    );
 
-    if (inputDirection === CONTROLLER_ENUM.TOP) {
+    const { mapRowCount: row, mapColumnCount: column } = DataManager.Instance;
+
+    //按钮方向——向上
+    if (type === CONTROLLER_ENUM.TOP) {
+      const playerNextY = y - 1;
+
+      //玩家方向——向上
       if (direction === DIRECTION_ENUM.TOP) {
-        const playerNextY = y - 1;
+        //判断是否超出地图
         if (playerNextY < 0) {
           this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
           return true;
         }
 
         const weaponNextY = y - 2;
-        const playerNextTile = tileInfo[x][playerNextY];
-        const weaponNextTile = tileInfo[x][weaponNextY];
+        const nextPlayerTile = tileInfo[x]?.[playerNextY];
+        const nextWeaponTile = tileInfo[x]?.[weaponNextY];
 
-        if (((x === doorX && playerNextY === doorY) || (x === doorX && weaponNextY === doorY))
-          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+        //判断门
+        if (
+          ((doorX === x && doorY === playerNextY) || (doorX === x && doorY === weaponNextY)) &&
+          doorState !== ENTITY_STATE_ENUM.DEATH
+        ) {
           this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
           return true;
         }
 
+        //判断敌人
         for (let i = 0; i < enemies.length; i++) {
-          const {x: enemyX, y: enemyY} = enemies[i]
-          if ((x === enemyX && playerNextY === enemyY) ||
-            (x === enemyX && weaponNextY === enemyY)) {
+          const enemy = enemies[i];
+          const { x: enemyX, y: enemyY } = enemy;
+
+          if ((enemyX === x && enemyY === weaponNextY) || (enemyX === x && enemyY === playerNextY)) {
             this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
             return true;
           }
         }
 
-        if (bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
-        (!weaponNextTile || weaponNextTile.turnable)) {
+        //判断地裂陷阱
+        if (
+          bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
+          (!nextWeaponTile || nextWeaponTile.turnable)
+        ) {
           return false;
         }
 
-        if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
-          // nothing
+        //最后判断地图元素
+        if (nextPlayerTile && nextPlayerTile.moveable && (!nextWeaponTile || nextWeaponTile.turnable)) {
+          // empty
         } else {
           this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
           return true;
         }
+
+        //玩家方向——向下
       } else if (direction === DIRECTION_ENUM.BOTTOM) {
-        const playerNextY = y - 1;
+        //判断是否超出地图
         if (playerNextY < 0) {
-          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+          this.state = ENTITY_STATE_ENUM.BLOCKBACK;
           return true;
         }
 
         const weaponNextY = y;
-        const playerNextTile = tileInfo[x][playerNextY];
-        const weaponNextTile = tileInfo[x][weaponNextY];
+        const nextPlayerTile = tileInfo[x]?.[playerNextY];
+        const nextWeaponTile = tileInfo[x]?.[weaponNextY];
 
-        if (((x === doorX && playerNextY === doorY) || (x === doorX && weaponNextY === doorY))
-          && doorState !== ENTITY_STATE_ENUM.DEATH) {
-          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+        //判断门
+        if (
+          ((doorX === x && doorY === playerNextY) || (doorX === x && doorY === weaponNextY)) &&
+          doorState !== ENTITY_STATE_ENUM.DEATH
+        ) {
+          this.state = ENTITY_STATE_ENUM.BLOCKBACK;
           return true;
         }
 
+        //判断敌人
         for (let i = 0; i < enemies.length; i++) {
-          const {x: enemyX, y: enemyY} = enemies[i]
-          if ((x === enemyX && playerNextY === enemyY) ||
-            (x === enemyX && weaponNextY === enemyY)) {
-            this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+          const enemy = enemies[i];
+          const { x: enemyX, y: enemyY } = enemy;
+
+          if (enemyX === x && enemyY === playerNextY) {
+            this.state = ENTITY_STATE_ENUM.BLOCKBACK;
             return true;
           }
         }
 
-        if (bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
-          (!weaponNextTile || weaponNextTile.turnable)) {
+        //判断地裂陷阱
+        if (
+          bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
+          (!nextWeaponTile || nextWeaponTile.turnable)
+        ) {
           return false;
         }
 
-        if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
-          // nothing
+        //最后判断地图元素
+        if (nextPlayerTile && nextPlayerTile.moveable && (!nextWeaponTile || nextWeaponTile.turnable)) {
+          // empty
         } else {
-          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+          this.state = ENTITY_STATE_ENUM.BLOCKBACK;
           return true;
         }
+
+        //玩家方向——向左
       } else if (direction === DIRECTION_ENUM.LEFT) {
-        const playerNextY = y - 1;
+        //判断是否超出地图
         if (playerNextY < 0) {
-          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
+          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
           return true;
         }
 
         const weaponNextX = x - 1;
         const weaponNextY = y - 1;
-        const playerNextTile = tileInfo[x][playerNextY];
-        const weaponNextTile = tileInfo[weaponNextX][weaponNextY];
+        const nextPlayerTile = tileInfo[x]?.[playerNextY];
+        const nextWeaponTile = tileInfo[weaponNextX]?.[weaponNextY];
 
-        if (((x === doorX && playerNextY === doorY) || (x - 1 === doorX && weaponNextY === doorY))
-          && doorState !== ENTITY_STATE_ENUM.DEATH) {
-          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
-          return true;
-        }
-
-        for (let i = 0; i < enemies.length; i++) {
-          const {x: enemyX, y: enemyY} = enemies[i]
-          if ((x === enemyX && playerNextY === enemyY) ||
-            (x - 1 === enemyX && weaponNextY === enemyY)) {
-            this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
-            return true;
-          }
-        }
-
-        if (bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
-          (!weaponNextTile || weaponNextTile.turnable)) {
-          return false;
-        }
-
-        if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
-          // nothing
-        } else {
-          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
-          return true;
-        }
-      } else if (direction === DIRECTION_ENUM.RIGHT) {
-        const playerNextY = y - 1;
-        if (playerNextY < 0) {
+        //判断门
+        if (
+          ((doorX === x && doorY === playerNextY) || (doorX === weaponNextX && doorY === weaponNextY)) &&
+          doorState !== ENTITY_STATE_ENUM.DEATH
+        ) {
           this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
           return true;
         }
 
-        const weaponNextX = x + 1;
-        const weaponNextY = y - 1;
-        const playerNextTile = tileInfo[x][playerNextY];
-        const weaponNextTile = tileInfo[weaponNextX][weaponNextY];
-
-        if (((x === doorX && playerNextY === doorY) || (x + 1 === doorX && weaponNextY === doorY))
-          && doorState !== ENTITY_STATE_ENUM.DEATH) {
-          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
-          return true;
-        }
-
+        //判断敌人
         for (let i = 0; i < enemies.length; i++) {
-          const {x: enemyX, y: enemyY} = enemies[i]
-          if ((x === enemyX && playerNextY === enemyY) ||
-            (x + 1 === enemyX && weaponNextY === enemyY)) {
+          const enemy = enemies[i];
+          const { x: enemyX, y: enemyY } = enemy;
+
+          if ((enemyX === x && enemyY === playerNextY) || (enemyX === weaponNextX && enemyY === weaponNextY)) {
             this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
             return true;
           }
         }
 
-        if (bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
-          (!weaponNextTile || weaponNextTile.turnable)) {
+        //判断地裂陷阱
+        if (
+          bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
+          (!nextWeaponTile || nextWeaponTile.turnable)
+        ) {
           return false;
         }
 
-        if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
-          // nothing
+        //最后判断地图元素
+        if (nextPlayerTile && nextPlayerTile.moveable && (!nextWeaponTile || nextWeaponTile.turnable)) {
+          // empty
         } else {
           this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
           return true;
         }
-      }
-    } else if (inputDirection === CONTROLLER_ENUM.BOTTOM) {
-      if (direction === DIRECTION_ENUM.TOP) {
-        const playerNextY = y + 1;
-        if (playerNextY > column - 1) {
-          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+
+        //玩家方向——向右
+      } else if (direction === DIRECTION_ENUM.RIGHT) {
+        //判断是否超出地图
+        if (playerNextY < 0) {
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
           return true;
         }
 
-        const weaponNextY = y;
-        const playerNextTile = tileInfo[x][playerNextY];
-        const weaponNextTile = tileInfo[x][weaponNextY];
+        const weaponNextX = x + 1;
+        const weaponNextY = y - 1;
+        const nextPlayerTile = tileInfo[x]?.[playerNextY];
+        const nextWeaponTile = tileInfo[weaponNextX]?.[weaponNextY];
 
-        if (((x === doorX && playerNextY === doorY) || (x === doorX && weaponNextY === doorY))
-          && doorState !== ENTITY_STATE_ENUM.DEATH) {
-          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+        //判断门
+        if (
+          ((doorX === x && doorY === playerNextY) || (doorX === weaponNextX && doorY === weaponNextY)) &&
+          doorState !== ENTITY_STATE_ENUM.DEATH
+        ) {
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
           return true;
         }
 
+        //判断敌人
         for (let i = 0; i < enemies.length; i++) {
-          const {x: enemyX, y: enemyY} = enemies[i]
-          if ((x === enemyX && playerNextY === enemyY) ||
-            (x === enemyX && weaponNextY === enemyY)) {
-            this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+          const enemy = enemies[i];
+          const { x: enemyX, y: enemyY } = enemy;
+
+          if ((enemyX === x && enemyY === playerNextY) || (enemyX === weaponNextX && enemyY === weaponNextY)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
             return true;
           }
         }
 
-        if (bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
-          (!weaponNextTile || weaponNextTile.turnable)) {
+        //判断地裂陷阱
+        if (
+          bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
+          (!nextWeaponTile || nextWeaponTile.turnable)
+        ) {
           return false;
         }
 
-        if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
-          // nothing
+        //最后判断地图元素
+        if (nextPlayerTile && nextPlayerTile.moveable && (!nextWeaponTile || nextWeaponTile.turnable)) {
+          // empty
         } else {
-          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
           return true;
         }
+      }
+
+      //按钮方向——向下
+    } else if (type === CONTROLLER_ENUM.BOTTOM) {
+      const playerNextY = y + 1;
+
+      //玩家方向——向上
+      if (direction === DIRECTION_ENUM.TOP) {
+        if (playerNextY > column - 1) {
+          this.state = ENTITY_STATE_ENUM.BLOCKBACK;
+
+          return true;
+        }
+
+        const weaponNextY = y;
+        const nextPlayerTile = tileInfo[x]?.[playerNextY];
+        const nextWeaponTile = tileInfo[x]?.[weaponNextY];
+
+        //判断门
+        if (
+          ((doorX === x && doorY === playerNextY) || (doorX === x && doorY === weaponNextY)) &&
+          doorState !== ENTITY_STATE_ENUM.DEATH
+        ) {
+          this.state = ENTITY_STATE_ENUM.BLOCKBACK;
+          return true;
+        }
+
+        //判断敌人
+        for (let i = 0; i < enemies.length; i++) {
+          const enemy = enemies[i];
+          const { x: enemyX, y: enemyY } = enemy;
+
+          if (enemyX === x && enemyY === playerNextY) {
+            this.state = ENTITY_STATE_ENUM.BLOCKBACK;
+            return true;
+          }
+        }
+
+        //判断地裂陷阱
+        if (
+          bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
+          (!nextWeaponTile || nextWeaponTile.turnable)
+        ) {
+          return false;
+        }
+
+        //最后判断地图元素
+        if (nextPlayerTile && nextPlayerTile.moveable && (!nextWeaponTile || nextWeaponTile.turnable)) {
+          // empty
+        } else {
+          this.state = ENTITY_STATE_ENUM.BLOCKBACK;
+          return true;
+        }
+
+        //玩家方向——向下
       } else if (direction === DIRECTION_ENUM.BOTTOM) {
-        const playerNextY = y + 1;
         if (playerNextY > column - 1) {
           this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
+
           return true;
         }
 
         const weaponNextY = y + 2;
-        const playerNextTile = tileInfo[x][playerNextY];
-        const weaponNextTile = tileInfo[x][weaponNextY];
+        const nextPlayerTile = tileInfo[x]?.[playerNextY];
+        const nextWeaponTile = tileInfo[x]?.[weaponNextY];
 
-        if (((x === doorX && playerNextY === doorY) || (x === doorX && weaponNextY === doorY))
-          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+        //判断门
+        if (
+          ((doorX === x && doorY === playerNextY) || (doorX === x && doorY === weaponNextY)) &&
+          doorState !== ENTITY_STATE_ENUM.DEATH
+        ) {
           this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
           return true;
         }
 
+        //判断敌人
         for (let i = 0; i < enemies.length; i++) {
-          const {x: enemyX, y: enemyY} = enemies[i]
-          if ((x === enemyX && playerNextY === enemyY) ||
-            (x === enemyX && weaponNextY === enemyY)) {
+          const enemy = enemies[i];
+          const { x: enemyX, y: enemyY } = enemy;
+
+          if ((enemyX === x && enemyY === weaponNextY) || (enemyX === x && enemyY === playerNextY)) {
             this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
             return true;
           }
         }
 
-        if (bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
-          (!weaponNextTile || weaponNextTile.turnable)) {
+        //判断地裂陷阱
+        if (
+          bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
+          (!nextWeaponTile || nextWeaponTile.turnable)
+        ) {
           return false;
         }
 
-        if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
-          // nothing
+        //最后判断地图元素
+        if (nextPlayerTile && nextPlayerTile.moveable && (!nextWeaponTile || nextWeaponTile.turnable)) {
+          // empty
         } else {
           this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
           return true;
         }
+
+        //玩家方向——向左
       } else if (direction === DIRECTION_ENUM.LEFT) {
-        const playerNextY = y + 1;
         if (playerNextY > column - 1) {
-          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
+
           return true;
         }
 
         const weaponNextX = x - 1;
         const weaponNextY = y + 1;
-        const playerNextTile = tileInfo[x][playerNextY];
-        const weaponNextTile = tileInfo[weaponNextX][weaponNextY];
+        const nextPlayerTile = tileInfo[x]?.[playerNextY];
+        const nextWeaponTile = tileInfo[weaponNextX]?.[weaponNextY];
 
-        if (((x === doorX && playerNextY === doorY) || (x - 1 === doorX && weaponNextY === doorY))
-          && doorState !== ENTITY_STATE_ENUM.DEATH) {
-          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
+        //判断门
+        if (
+          ((doorX === x && doorY === playerNextY) || (doorX === weaponNextX && doorY === weaponNextY)) &&
+          doorState !== ENTITY_STATE_ENUM.DEATH
+        ) {
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
           return true;
         }
 
+        //判断敌人
         for (let i = 0; i < enemies.length; i++) {
-          const {x: enemyX, y: enemyY} = enemies[i]
-          if ((x === enemyX && playerNextY === enemyY) ||
-            (x - 1 === enemyX && weaponNextY === enemyY)) {
-            this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
+          const enemy = enemies[i];
+          const { x: enemyX, y: enemyY } = enemy;
+
+          if ((enemyX === x && enemyY === playerNextY) || (enemyX === weaponNextX && enemyY === weaponNextY)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
             return true;
           }
         }
 
-        if (bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
-          (!weaponNextTile || weaponNextTile.turnable)) {
+        //判断地裂陷阱
+        if (
+          bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
+          (!nextWeaponTile || nextWeaponTile.turnable)
+        ) {
           return false;
         }
 
-        if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
-          // nothing
+        //最后判断地图元素
+        if (nextPlayerTile && nextPlayerTile.moveable && (!nextWeaponTile || nextWeaponTile.turnable)) {
+          // empty
         } else {
-          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
           return true;
         }
+
+        //玩家方向——向右
       } else if (direction === DIRECTION_ENUM.RIGHT) {
-        const playerNextY = y + 1;
         if (playerNextY > column - 1) {
-          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
+          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
+
           return true;
         }
 
         const weaponNextX = x + 1;
         const weaponNextY = y + 1;
-        const playerNextTile = tileInfo[x][playerNextY];
-        const weaponNextTile = tileInfo[weaponNextX][weaponNextY];
+        const nextPlayerTile = tileInfo[x]?.[playerNextY];
+        const nextWeaponTile = tileInfo[weaponNextX]?.[weaponNextY];
 
-        if (((x === doorX && playerNextY === doorY) || (x + 1 === doorX && weaponNextY === doorY))
-          && doorState !== ENTITY_STATE_ENUM.DEATH) {
-          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
-          return true;
-        }
-
-        for (let i = 0; i < enemies.length; i++) {
-          const {x: enemyX, y: enemyY} = enemies[i]
-          if ((x === enemyX && playerNextY === enemyY) ||
-            (x + 1 === enemyX && weaponNextY === enemyY)) {
-            this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
-            return true;
-          }
-        }
-
-        if (bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
-          (!weaponNextTile || weaponNextTile.turnable)) {
-          return false;
-        }
-
-        if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
-          // nothing
-        } else {
-          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
-          return true;
-        }
-      }
-    } else if (inputDirection === CONTROLLER_ENUM.LEFT) {
-      if (direction === DIRECTION_ENUM.TOP) {
-        const playerNextX = x - 1;
-        if (playerNextX < 0) {
-          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
-          return true;
-        }
-
-        const weaponNextX = x - 1;
-        const weaponNextY = y - 1;
-        const playerNextTile = tileInfo[playerNextX][y];
-        const weaponNextTile = tileInfo[weaponNextX][weaponNextY];
-
-        if (((y === doorY && playerNextX === doorX) || (y + 1 === doorY && weaponNextY === doorY))
-          && doorState !== ENTITY_STATE_ENUM.DEATH) {
-          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
-          return true;
-        }
-
-        for (let i = 0; i < enemies.length; i++) {
-          const {x: enemyX, y: enemyY} = enemies[i]
-          if ((y === enemyY && playerNextX === enemyX) ||
-            (y + 1 === enemyY && weaponNextY === enemyY)) {
-            this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
-            return true;
-          }
-        }
-
-        if (bursts.some(burst => burst.y === y && burst.x === playerNextX) &&
-          (!weaponNextTile || weaponNextTile.turnable)) {
-          return false;
-        }
-
-        if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
-          // nothing
-        } else {
-          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
-          return true;
-        }
-      } else if (direction === DIRECTION_ENUM.BOTTOM) {
-        const playerNextX = x - 1;
-        if (playerNextX < 0) {
+        //判断门
+        if (
+          ((doorX === x && doorY === playerNextY) || (doorX === weaponNextX && doorY === weaponNextY)) &&
+          doorState !== ENTITY_STATE_ENUM.DEATH
+        ) {
           this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
           return true;
         }
 
-        const weaponNextX = x - 1;
-        const weaponNextY = y + 1;
-        const playerNextTile = tileInfo[playerNextX][y];
-        const weaponNextTile = tileInfo[weaponNextX][weaponNextY];
-
-        if (((y === doorY && playerNextX === doorX) || (y - 1 === doorY && weaponNextY === doorY))
-          && doorState !== ENTITY_STATE_ENUM.DEATH) {
-          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
-          return true;
-        }
-
+        //判断敌人
         for (let i = 0; i < enemies.length; i++) {
-          const {x: enemyX, y: enemyY} = enemies[i]
-          if ((y === enemyY && playerNextX === enemyX) ||
-            (y - 1 === enemyY && weaponNextY === enemyY)) {
+          const enemy = enemies[i];
+          const { x: enemyX, y: enemyY } = enemy;
+
+          if ((enemyX === x && enemyY === playerNextY) || (enemyX === weaponNextX && enemyY === weaponNextY)) {
             this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
             return true;
           }
         }
 
-        if (bursts.some(burst => burst.y === y && burst.x === playerNextX) &&
-          (!weaponNextTile || weaponNextTile.turnable)) {
+        //判断地裂陷阱
+        if (
+          bursts.some(burst => burst.x === x && burst.y === playerNextY) &&
+          (!nextWeaponTile || nextWeaponTile.turnable)
+        ) {
           return false;
         }
 
-        if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
-          // nothing
+        //最后判断地图元素
+        if (nextPlayerTile && nextPlayerTile.moveable && (!nextWeaponTile || nextWeaponTile.turnable)) {
+          // empty
         } else {
           this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
           return true;
         }
+      }
+
+      //按钮方向——向左
+    } else if (type === CONTROLLER_ENUM.LEFT) {
+      const playerNextX = x - 1;
+
+      //玩家方向——向上
+      if (direction === DIRECTION_ENUM.TOP) {
+        //判断是否超出地图
+        if (playerNextX < 0) {
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
+
+          return true;
+        }
+
+        const weaponNextX = x - 1;
+        const weaponNextY = y - 1;
+        const nextPlayerTile = tileInfo[playerNextX]?.[y];
+        const nextWeaponTile = tileInfo[weaponNextX]?.[weaponNextY];
+
+        //判断门
+        if (
+          ((doorX === playerNextX && doorY === y) || (doorX === weaponNextX && doorY === weaponNextY)) &&
+          doorState !== ENTITY_STATE_ENUM.DEATH
+        ) {
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
+          return true;
+        }
+
+        //判断敌人
+        for (let i = 0; i < enemies.length; i++) {
+          const enemy = enemies[i];
+          const { x: enemyX, y: enemyY } = enemy;
+
+          if ((enemyX === playerNextX && enemyY === y) || (enemyX === weaponNextX && enemyY === weaponNextY)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
+            return true;
+          }
+        }
+
+        //判断地裂陷阱
+        if (
+          bursts.some(burst => burst.x === playerNextX && burst.y === y) &&
+          (!nextWeaponTile || nextWeaponTile.turnable)
+        ) {
+          return false;
+        }
+
+        //最后判断地图元素
+        if (nextPlayerTile && nextPlayerTile.moveable && (!nextWeaponTile || nextWeaponTile.turnable)) {
+          // empty
+        } else {
+          this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
+          return true;
+        }
+
+        //玩家方向——向下
+      } else if (direction === DIRECTION_ENUM.BOTTOM) {
+        //判断是否超出地图
+        if (playerNextX < 0) {
+          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
+
+          return true;
+        }
+
+        const weaponNextX = x - 1;
+        const weaponNextY = y + 1;
+        const nextPlayerTile = tileInfo[playerNextX]?.[y];
+        const nextWeaponTile = tileInfo[weaponNextX]?.[weaponNextY];
+
+        //判断门
+        if (
+          ((doorX === playerNextX && doorY === y) || (doorX === weaponNextX && doorY === weaponNextY)) &&
+          doorState !== ENTITY_STATE_ENUM.DEATH
+        ) {
+          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
+          return true;
+        }
+
+        //判断敌人
+        for (let i = 0; i < enemies.length; i++) {
+          const enemy = enemies[i];
+          const { x: enemyX, y: enemyY } = enemy;
+
+          if ((enemyX === playerNextX && enemyY === y) || (enemyX === weaponNextX && enemyY === weaponNextY)) {
+            this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
+            return true;
+          }
+        }
+
+        //判断地裂陷阱
+        if (
+          bursts.some(burst => burst.x === playerNextX && burst.y === y) &&
+          (!nextWeaponTile || nextWeaponTile.turnable)
+        ) {
+          return false;
+        }
+
+        //最后判断地图元素
+        if (nextPlayerTile && nextPlayerTile.moveable && (!nextWeaponTile || nextWeaponTile.turnable)) {
+          // empty
+        } else {
+          this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
+          return true;
+        }
+
+        //玩家方向——向左
       } else if (direction === DIRECTION_ENUM.LEFT) {
-        const playerNextX = x - 1;
+        //判断是否超出地图
         if (playerNextX < 0) {
           this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
+
           return true;
         }
 
         const weaponNextX = x - 2;
-        const playerNextTile = tileInfo[playerNextX][y];
-        const weaponNextTile = tileInfo[weaponNextX][y];
+        const nextPlayerTile = tileInfo[playerNextX]?.[y];
+        const nextWeaponTile = tileInfo[weaponNextX]?.[y];
 
-        if (((y === doorY && playerNextX === doorX) || (y === doorY && weaponNextX === doorX))
-          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+        //判断门
+        if (
+          ((doorX === playerNextX && doorY === y) || (doorX === weaponNextX && doorY === y)) &&
+          doorState !== ENTITY_STATE_ENUM.DEATH
+        ) {
           this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
           return true;
         }
 
+        //判断敌人
         for (let i = 0; i < enemies.length; i++) {
-          const {x: enemyX, y: enemyY} = enemies[i]
-          if ((y === enemyY && playerNextX === enemyX) ||
-            (y === enemyY && weaponNextX === enemyX)) {
+          const enemy = enemies[i];
+          const { x: enemyX, y: enemyY } = enemy;
+
+          if ((enemyX === playerNextX && enemyY === y) || (enemyX === weaponNextX && enemyY === y)) {
             this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
             return true;
           }
         }
 
-        if (bursts.some(burst => burst.y === y && burst.x === playerNextX) &&
-          (!weaponNextTile || weaponNextTile.turnable)) {
+        //判断地裂陷阱
+        if (
+          bursts.some(burst => burst.x === playerNextX && burst.y === y) &&
+          (!nextWeaponTile || nextWeaponTile.turnable)
+        ) {
           return false;
         }
 
-        if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
-          // nothing
+        //最后判断地图元素
+        if (nextPlayerTile && nextPlayerTile.moveable && (!nextWeaponTile || nextWeaponTile.turnable)) {
+          // empty
         } else {
           this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
           return true;
         }
+
+        //玩家方向——向右
       } else if (direction === DIRECTION_ENUM.RIGHT) {
-        const playerNextX = x - 1;
-        if (playerNextX > row - 1) {
-          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+        //判断是否超出地图
+        if (playerNextX < 0) {
+          this.state = ENTITY_STATE_ENUM.BLOCKBACK;
+
           return true;
         }
 
         const weaponNextX = x;
-        const playerNextTile = tileInfo[playerNextX][y];
-        const weaponNextTile = tileInfo[weaponNextX][y];
+        const nextPlayerTile = tileInfo[playerNextX]?.[y];
+        const nextWeaponTile = tileInfo[weaponNextX]?.[y];
 
-        if (((y === doorY && playerNextX === doorX) || (y === doorY && weaponNextX === doorX))
-          && doorState !== ENTITY_STATE_ENUM.DEATH) {
-          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+        //判断门
+        if (
+          ((doorX === playerNextX && doorY === y) || (doorX === weaponNextX && doorY === y)) &&
+          doorState !== ENTITY_STATE_ENUM.DEATH
+        ) {
+          this.state = ENTITY_STATE_ENUM.BLOCKBACK;
           return true;
         }
 
+        //判断敌人
         for (let i = 0; i < enemies.length; i++) {
-          const {x: enemyX, y: enemyY} = enemies[i]
-          if ((y === enemyY && playerNextX === enemyX) ||
-            (y === enemyY && weaponNextX === enemyX)) {
-            this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+          const enemy = enemies[i];
+          const { x: enemyX, y: enemyY } = enemy;
+
+          if (enemyX === playerNextX && enemyY === y) {
+            this.state = ENTITY_STATE_ENUM.BLOCKBACK;
             return true;
           }
         }
 
-        if (bursts.some(burst => burst.y === y && burst.x === playerNextX) &&
-          (!weaponNextTile || weaponNextTile.turnable)) {
+        //判断地裂陷阱
+        if (
+          bursts.some(burst => burst.x === playerNextX && burst.y === y) &&
+          (!nextWeaponTile || nextWeaponTile.turnable)
+        ) {
           return false;
         }
 
-        if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
-          // nothing
+        //最后判断地图元素
+        if (nextPlayerTile && nextPlayerTile.moveable && (!nextWeaponTile || nextWeaponTile.turnable)) {
+          // empty
         } else {
-          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+          this.state = ENTITY_STATE_ENUM.BLOCKBACK;
           return true;
         }
       }
-    } else if (inputDirection === CONTROLLER_ENUM.RIGHT) {
+
+      //按钮方向——向右
+    } else if (type === CONTROLLER_ENUM.RIGHT) {
+      const playerNextX = x + 1;
+
+      //玩家方向——向上
       if (direction === DIRECTION_ENUM.TOP) {
-        const playerNextX = x + 1;
         if (playerNextX > row - 1) {
           this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
           return true;
@@ -635,229 +787,315 @@ export default class PlayerManager extends EntityManager {
 
         const weaponNextX = x + 1;
         const weaponNextY = y - 1;
-        const playerNextTile = tileInfo[playerNextX][y];
-        const weaponNextTile = tileInfo[weaponNextX][weaponNextY];
+        const nextPlayerTile = tileInfo[playerNextX]?.[y];
+        const nextWeaponTile = tileInfo[weaponNextX]?.[weaponNextY];
 
-        if (((y === doorY && playerNextX === doorX) || (y - 1 === doorY && weaponNextX === doorX))
-          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+        //判断门
+        if (
+          ((doorX === playerNextX && doorY === y) || (doorX === weaponNextX && doorY === weaponNextY)) &&
+          doorState !== ENTITY_STATE_ENUM.DEATH
+        ) {
           this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
           return true;
         }
-
+        console.log(123)
+        //判断敌人
         for (let i = 0; i < enemies.length; i++) {
-          const {x: enemyX, y: enemyY} = enemies[i]
-          if ((y === enemyY && playerNextX === enemyX) ||
-            (y - 1 === enemyY && weaponNextX === enemyX)) {
+          const enemy = enemies[i];
+          const { x: enemyX, y: enemyY } = enemy;
+
+          if ((enemyX === playerNextX && enemyY === y) || (enemyX === weaponNextX && enemyY === weaponNextY)) {
             this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
             return true;
           }
         }
 
-        if (bursts.some(burst => burst.y === y && burst.x === playerNextX) &&
-          (!weaponNextTile || weaponNextTile.turnable)) {
+
+        //判断地裂陷阱
+        if (
+          bursts.some(burst => burst.x === playerNextX && burst.y === y) &&
+          (!nextWeaponTile || nextWeaponTile.turnable)
+        ) {
           return false;
         }
 
-        if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
-          // nothing
+        //最后判断地图元素
+        if (nextPlayerTile && nextPlayerTile.moveable && (!nextWeaponTile || nextWeaponTile.turnable)) {
+          // empty
         } else {
           this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
           return true;
         }
+
+        //玩家方向——向下
       } else if (direction === DIRECTION_ENUM.BOTTOM) {
-        const playerNextX = x + 1;
         if (playerNextX > row - 1) {
           this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
+
           return true;
         }
 
         const weaponNextX = x + 1;
-        const weaponNextY = y - 1;
-        const playerNextTile = tileInfo[playerNextX][y];
-        const weaponNextTile = tileInfo[weaponNextX][weaponNextY];
+        const weaponNextY = y + 1;
+        const nextPlayerTile = tileInfo[playerNextX]?.[y];
+        const nextWeaponTile = tileInfo[weaponNextX]?.[weaponNextY];
 
-        if (((y === doorY && playerNextX === doorX) || (y + 1 === doorY && weaponNextX === doorX))
-          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+        //判断门
+        if (
+          ((doorX === playerNextX && doorY === y) || (doorX === weaponNextX && doorY === weaponNextY)) &&
+          doorState !== ENTITY_STATE_ENUM.DEATH
+        ) {
           this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
           return true;
         }
 
+        //判断敌人
         for (let i = 0; i < enemies.length; i++) {
-          const {x: enemyX, y: enemyY} = enemies[i]
-          if ((y === enemyY && playerNextX === enemyX) ||
-            (y + 1 === enemyY && weaponNextX === enemyX)) {
+          const enemy = enemies[i];
+          const { x: enemyX, y: enemyY } = enemy;
+
+          if ((enemyX === playerNextX && enemyY === y) || (enemyX === weaponNextX && enemyY === weaponNextY)) {
             this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
             return true;
           }
         }
 
-        if (bursts.some(burst => burst.y === y && burst.x === playerNextX) &&
-          (!weaponNextTile || weaponNextTile.turnable)) {
+        //判断地裂陷阱
+        if (
+          bursts.some(burst => burst.x === playerNextX && burst.y === y) &&
+          (!nextWeaponTile || nextWeaponTile.turnable)
+        ) {
           return false;
         }
 
-        if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
-          // nothing
+        //最后判断地图元素
+        if (nextPlayerTile && nextPlayerTile.moveable && (!nextWeaponTile || nextWeaponTile.turnable)) {
+          // empty
         } else {
           this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
           return true;
         }
+
+        //玩家方向——向左
       } else if (direction === DIRECTION_ENUM.LEFT) {
-        const playerNextX = x + 1;
         if (playerNextX > row - 1) {
-          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+          this.state = ENTITY_STATE_ENUM.BLOCKBACK;
+
           return true;
         }
 
         const weaponNextX = x;
-        const playerNextTile = tileInfo[playerNextX][y];
-        const weaponNextTile = tileInfo[weaponNextX][y];
+        const nextPlayerTile = tileInfo[playerNextX]?.[y];
+        const nextWeaponTile = tileInfo[weaponNextX]?.[y];
 
-        if (((y === doorY && playerNextX === doorX) || (y === doorY && weaponNextX === doorX))
-          && doorState !== ENTITY_STATE_ENUM.DEATH) {
-          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+        //判断门
+        if (
+          ((doorX === playerNextX && doorY === y) || (doorX === weaponNextX && doorY === y)) &&
+          doorState !== ENTITY_STATE_ENUM.DEATH
+        ) {
+          this.state = ENTITY_STATE_ENUM.BLOCKBACK;
           return true;
         }
 
+        //判断敌人
         for (let i = 0; i < enemies.length; i++) {
-          const {x: enemyX, y: enemyY} = enemies[i]
-          if ((y === enemyY && playerNextX === enemyX) ||
-            (y === enemyY && weaponNextX === enemyX)) {
-            this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+          const enemy = enemies[i];
+          const { x: enemyX, y: enemyY } = enemy;
+
+          if (enemyX === playerNextX && enemyY === y) {
+            this.state = ENTITY_STATE_ENUM.BLOCKBACK;
             return true;
           }
         }
 
-        if (bursts.some(burst => burst.y === y && burst.x === playerNextX) &&
-          (!weaponNextTile || weaponNextTile.turnable)) {
+        //判断地裂陷阱
+        if (
+          bursts.some(burst => burst.x === playerNextX && burst.y === y) &&
+          (!nextWeaponTile || nextWeaponTile.turnable)
+        ) {
           return false;
         }
 
-        if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
-          // nothing
+        //最后判断地图元素
+        if (nextPlayerTile && nextPlayerTile.moveable && (!nextWeaponTile || nextWeaponTile.turnable)) {
+          // empty
         } else {
-          this.state = ENTITY_STATE_ENUM.BLOCKBCAK;
+          this.state = ENTITY_STATE_ENUM.BLOCKBACK;
           return true;
         }
+
+        //玩家方向——向右
       } else if (direction === DIRECTION_ENUM.RIGHT) {
-        const playerNextX = x + 1;
         if (playerNextX > row - 1) {
           this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
+
           return true;
         }
 
         const weaponNextX = x + 2;
-        const playerNextTile = tileInfo[playerNextX][y];
-        const weaponNextTile = tileInfo[weaponNextX][y];
+        const nextPlayerTile = tileInfo[playerNextX]?.[y];
+        const nextWeaponTile = tileInfo[weaponNextX]?.[y];
 
-        if (((y === doorY && playerNextX === doorX) || (y === doorY && weaponNextX === doorX))
-          && doorState !== ENTITY_STATE_ENUM.DEATH) {
+        //判断门
+        if (
+          ((doorX === playerNextX && doorY === y) || (doorX === weaponNextX && doorY === y)) &&
+          doorState !== ENTITY_STATE_ENUM.DEATH
+        ) {
           this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
           return true;
         }
 
+        //判断敌人
         for (let i = 0; i < enemies.length; i++) {
-          const {x: enemyX, y: enemyY} = enemies[i]
-          if ((y === enemyY && playerNextX === enemyX) ||
-            (y === enemyY && weaponNextX === enemyX)) {
+          const enemy = enemies[i];
+          const { x: enemyX, y: enemyY } = enemy;
+
+          if ((enemyX === playerNextX && enemyY === y) || (enemyX === weaponNextX && enemyY === y)) {
             this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
             return true;
           }
         }
 
-        if (bursts.some(burst => burst.y === y && burst.x === playerNextX) &&
-          (!weaponNextTile || weaponNextTile.turnable)) {
+        //判断地裂陷阱
+        if (
+          bursts.some(burst => burst.x === playerNextX && burst.y === y) &&
+          (!nextWeaponTile || nextWeaponTile.turnable)
+        ) {
           return false;
         }
 
-        if (playerNextTile && playerNextTile.moveable && (!weaponNextTile || weaponNextTile.turnable)) {
-          // nothing
+        //最后判断地图元素
+        if (nextPlayerTile && nextPlayerTile.moveable && (!nextWeaponTile || nextWeaponTile.turnable)) {
+          // empty
         } else {
           this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
           return true;
         }
       }
-    } else if (inputDirection === CONTROLLER_ENUM.TURNLEFT) {
-      let nextX, nextY;
+
+      //按钮方向——左转
+    } else if (type === CONTROLLER_ENUM.TURNLEFT) {
+      let nextY, nextX;
       if (direction === DIRECTION_ENUM.TOP) {
-        nextX = x - 1;
+        //朝上左转的话，左上角三个tile都必须turnable为true，并且没有敌人
         nextY = y - 1;
+        nextX = x - 1;
       } else if (direction === DIRECTION_ENUM.BOTTOM) {
-        nextX = x + 1;
         nextY = y + 1;
+        nextX = x + 1;
       } else if (direction === DIRECTION_ENUM.LEFT) {
-        nextX = x - 1;
         nextY = y + 1;
+        nextX = x - 1;
       } else if (direction === DIRECTION_ENUM.RIGHT) {
-        nextX = x + 1;
         nextY = y - 1;
+        nextX = x + 1;
       }
 
-      if (((doorX === nextX && doorY === y) || (doorY === nextY && doorX === x)
-        || doorX === nextX && doorY === nextY) && doorState !== ENTITY_STATE_ENUM.DEATH) {
+      //判断门
+      if (
+        ((doorX === x && doorY === nextY) ||
+          (doorX === nextX && doorY === y) ||
+          (doorX === nextX && doorY === nextY)) &&
+        doorState !== ENTITY_STATE_ENUM.DEATH
+      ) {
         this.state = ENTITY_STATE_ENUM.BLOCKTURNLEFT;
         return true;
       }
 
+      //判断敌人
       for (let i = 0; i < enemies.length; i++) {
-        const {x: enemyX, y: enemyY} = enemies[i]
-        if ((x === enemyX && nextY === enemyY) ||
-          (nextX === enemyX && y === enemyY) ||
-          (nextX === enemyX && nextY === enemyY)) {
+        const enemy = enemies[i];
+        const { x: enemyX, y: enemyY } = enemy;
+
+        if (enemyX === nextX && enemyY === y) {
           this.state = ENTITY_STATE_ENUM.BLOCKTURNLEFT;
+
+          return true;
+        } else if (enemyX === nextX && enemyY === nextY) {
+          this.state = ENTITY_STATE_ENUM.BLOCKTURNLEFT;
+
+          return true;
+        } else if (enemyX === x && enemyY === nextY) {
+          this.state = ENTITY_STATE_ENUM.BLOCKTURNLEFT;
+
           return true;
         }
       }
 
-      if ((!tileInfo[x]?.[nextY] || tileInfo[x]?.[nextY]?.turnable) &&
-        (!tileInfo[nextX]?.[y] || tileInfo[nextX]?.[y]?.turnable) &&
-        (!tileInfo[nextX]?.[nextY] || tileInfo[nextX]?.[nextY]?.turnable)) {
-        // nothing
+      //最后判断地图元素
+      if (
+        (!tileInfo[x]?.[nextY] || tileInfo[x]?.[nextY].turnable) &&
+        (!tileInfo[nextX]?.[y] || tileInfo[nextX]?.[y].turnable) &&
+        (!tileInfo[nextX]?.[nextY] || tileInfo[nextX]?.[nextY].turnable)
+      ) {
+        // empty
       } else {
         this.state = ENTITY_STATE_ENUM.BLOCKTURNLEFT;
         return true;
       }
-    } else if (inputDirection === CONTROLLER_ENUM.TURNRIGHT) {
+
+      //按钮方向——右转
+    } else if (type === CONTROLLER_ENUM.TURNRIGHT) {
       let nextX, nextY;
       if (direction === DIRECTION_ENUM.TOP) {
-        nextX = x + 1;
+        //朝上右转的话，右上角三个tile都必须turnable为true
         nextY = y - 1;
+        nextX = x + 1;
       } else if (direction === DIRECTION_ENUM.BOTTOM) {
-        nextX = x - 1;
         nextY = y + 1;
+        nextX = x - 1;
       } else if (direction === DIRECTION_ENUM.LEFT) {
-        nextX = x - 1;
         nextY = y - 1;
+        nextX = x - 1;
       } else if (direction === DIRECTION_ENUM.RIGHT) {
-        nextX = x + 1;
         nextY = y + 1;
+        nextX = x + 1;
       }
 
-      if (((doorX === nextX && doorY === y) || (doorY === nextY && doorX === x)
-        || doorX === nextX && doorY === nextY) && doorState !== ENTITY_STATE_ENUM.DEATH) {
+      //判断门
+      if (
+        ((doorX === x && doorY === nextY) ||
+          (doorX === nextX && doorY === y) ||
+          (doorX === nextX && doorY === nextY)) &&
+        doorState !== ENTITY_STATE_ENUM.DEATH
+      ) {
         this.state = ENTITY_STATE_ENUM.BLOCKTURNRIGHT;
         return true;
       }
 
+      //判断敌人
       for (let i = 0; i < enemies.length; i++) {
-        const {x: enemyX, y: enemyY} = enemies[i]
-        if ((x === enemyX && nextY === enemyY) ||
-          (nextX === enemyX && y === enemyY) ||
-          (nextX === enemyX && nextY === enemyY)) {
+        const enemy = enemies[i];
+        const { x: enemyX, y: enemyY } = enemy;
+
+        if (enemyX === nextX && enemyY === y) {
           this.state = ENTITY_STATE_ENUM.BLOCKTURNRIGHT;
+
+          return true;
+        } else if (enemyX === nextX && enemyY === nextY) {
+          this.state = ENTITY_STATE_ENUM.BLOCKTURNRIGHT;
+
+          return true;
+        } else if (enemyX === x && enemyY === nextY) {
+          this.state = ENTITY_STATE_ENUM.BLOCKTURNRIGHT;
+
           return true;
         }
       }
 
-      if ((!tileInfo[x]?.[nextY] || tileInfo[x]?.[nextY]?.turnable) &&
-        (!tileInfo[nextX]?.[y] || tileInfo[nextX]?.[y]?.turnable) &&
-        (!tileInfo[nextX]?.[nextY] || tileInfo[nextX]?.[nextY]?.turnable)) {
-        // nothing
+      //最后判断地图元素
+      if (
+        (!tileInfo[x]?.[nextY] || tileInfo[x]?.[nextY].turnable) &&
+        (!tileInfo[nextX]?.[y] || tileInfo[nextX]?.[y].turnable) &&
+        (!tileInfo[nextX]?.[nextY] || tileInfo[nextX]?.[nextY].turnable)
+      ) {
+        // empty
       } else {
         this.state = ENTITY_STATE_ENUM.BLOCKTURNRIGHT;
         return true;
       }
     }
+
     return false;
   }
 }
