@@ -1,9 +1,10 @@
 import {GameObject} from '@eva/eva.js';
 import {ENTITY_HEIGHT, ENTITY_WIDTH} from '../../../../Base/EntityManager';
 import WoodenSkeletonManager from './Scripts/WoodenSkeletonManager';
+import {IEntity} from "../../../../Levels";
 
 
-const WoodenSkeleton = () => {
+const WoodenSkeleton = (params: IEntity) => {
   const woodenSkeleton = new GameObject('woodenSkeleton', {
     size: {
       width: ENTITY_WIDTH,
@@ -11,7 +12,7 @@ const WoodenSkeleton = () => {
     }
   })
 
-  woodenSkeleton.addComponent(new WoodenSkeletonManager());
+  woodenSkeleton.addComponent(new WoodenSkeletonManager(params));
 
   return woodenSkeleton;
 }

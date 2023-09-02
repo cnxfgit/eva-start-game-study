@@ -5,27 +5,24 @@ import EntityManager from '../../../../../Base/EntityManager';
 import DataManager from '../../../../../Runtime/DataManager';
 import EnemyManager from '../../../../../Base/EnemyManager';
 import BurstManager from '../../Burst/Scripts/BurstManager';
+import {IEntity} from '../../../../../Levels';
 
 export default class PlayerManager extends EntityManager {
   static componentName = 'PlayerManager';
-
 
   targetX: number;
   targetY: number;
   isMoving: boolean = false;
   readonly speed = 1 / 10;
 
-  init() {
+  init(params:IEntity) {
     this.fsm = this.gameObject.addComponent(new PlayerStateMachine());
-    super.init();
-    this.x = 2;
-    this.y = 8;
-    this.targetX = 2;
-    this.targetY = 8;
+    super.init(params);
+
+    this.targetX = this.x;
+    this.targetY = this.y;
     EventManager.Instance.on(EVENT_ENUM.PLAYER_CTRL, this.inputHandler, this);
     EventManager.Instance.on(EVENT_ENUM.ATTACK_PLAYER, this.onDead, this);
-    this.state = ENTITY_STATE_ENUM.IDLE;
-    this.direction = DIRECTION_ENUM.TOP;
   }
 
   onDestroy() {
@@ -90,33 +87,43 @@ export default class PlayerManager extends EntityManager {
   }
 
   willAttack(inputDirection: CONTROLLER_ENUM): string {
-    const enemies = DataManager.Instance.enemies
-      .filter(enemy => enemy.state !== ENTITY_STATE_ENUM.DEATH);
+    const enemies = DataManager.Instance.enemies.filter(
+      (enemy: EnemyManager) => enemy.state !== ENTITY_STATE_ENUM.DEATH,
+    );
     for (let i = 0; i < enemies.length; i++) {
       const enemy = enemies[i];
-      const {x: enemyX, y: enemyY, id} = enemy;
-      if (inputDirection === CONTROLLER_ENUM.TOP &&
+      const { x: enemyX, y: enemyY, id: enemyId } = enemy;
+      if (
         this.direction === DIRECTION_ENUM.TOP &&
-        this.x === enemyX &&
-        this.y - 2 === enemyY) {
-        return id;
-      } else if (inputDirection === CONTROLLER_ENUM.BOTTOM &&
+        inputDirection === CONTROLLER_ENUM.TOP &&
+        enemyY === this.targetY - 2 &&
+        enemyX === this.x
+      ) {
+        return enemyId;
+      } else if (
         this.direction === DIRECTION_ENUM.BOTTOM &&
-        this.x === enemyX &&
-        this.y + 2 === enemyY) {
-        return id;
-      } else if (inputDirection === CONTROLLER_ENUM.LEFT &&
+        inputDirection === CONTROLLER_ENUM.BOTTOM &&
+        enemyY === this.targetY + 2 &&
+        enemyX === this.x
+      ) {
+        return enemyId;
+      } else if (
         this.direction === DIRECTION_ENUM.LEFT &&
-        this.y === enemyY &&
-        this.x - 2 === enemyX) {
-        return id;
-      } else if (inputDirection === CONTROLLER_ENUM.TOP &&
-        this.direction === DIRECTION_ENUM.TOP &&
-        this.y === enemyY &&
-        this.x + 2 === enemyX) {
-        return id;
+        inputDirection === CONTROLLER_ENUM.LEFT &&
+        enemyX === this.targetX - 2 &&
+        enemyY === this.y
+      ) {
+        return enemyId;
+      } else if (
+        this.direction === DIRECTION_ENUM.RIGHT &&
+        inputDirection === CONTROLLER_ENUM.RIGHT &&
+        enemyX === this.targetX + 2 &&
+        enemyY === this.y
+      ) {
+        return enemyId;
       }
     }
+
     return '';
   }
 
@@ -798,7 +805,7 @@ export default class PlayerManager extends EntityManager {
           this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
           return true;
         }
-        console.log(123)
+
         //判断敌人
         for (let i = 0; i < enemies.length; i++) {
           const enemy = enemies[i];

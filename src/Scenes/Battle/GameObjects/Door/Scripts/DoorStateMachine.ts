@@ -19,7 +19,6 @@ export default class DoorStateMachine extends StateMachine {
 
     this.initParams();
     this.initStateMachines();
-    this.initAnimationEvent();
   }
 
   initParams() {
@@ -35,8 +34,6 @@ export default class DoorStateMachine extends StateMachine {
     this.stateMachines.set(PARAMS_NAME_ENUM.DEATH,
       new DeathSubStateMachine(this, spriteAnimation));
   }
-
-  initAnimationEvent() {}
 
   run() {
     switch (this.currentState) {

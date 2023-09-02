@@ -1,21 +1,18 @@
-import {DIRECTION_ENUM, ENTITY_STATE_ENUM, EVENT_ENUM,} from '../../../../../Enums';
+import {ENTITY_STATE_ENUM, EVENT_ENUM,} from '../../../../../Enums';
 import EntityManager from '../../../../../Base/EntityManager';
 import EventManager from '../../../../../Runtime/EventManager';
 import BurstStateMachine from './BurstStateMachine';
-import {TILE_HEIGHT, TILE_WIDTH} from "../../Tile";
-import DataManager from "../../../../../Runtime/DataManager";
+import {TILE_HEIGHT, TILE_WIDTH} from '../../Tile';
+import DataManager from '../../../../../Runtime/DataManager';
+import {IEntity} from '../../../../../Levels';
 
 
 export default class BurstManager extends EntityManager {
   static componentName = 'BurstManager';
 
-  init() {
+  init(params: IEntity) {
     this.fsm = this.gameObject.addComponent(new BurstStateMachine());
-    super.init();
-    this.x = 2;
-    this.y = 6;
-    this.state = ENTITY_STATE_ENUM.IDLE;
-    this.direction = DIRECTION_ENUM.TOP;
+    super.init(params);
 
     EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.onBurst, this);
   }

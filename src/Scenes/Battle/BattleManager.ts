@@ -1,11 +1,11 @@
 import {Component} from '@eva/eva.js';
 import TileMap from './GameObjects/TileMap';
-import levels from '../../Levels';
+import levels, {ILevel} from '../../Levels';
 import DataManager from '../../Runtime/DataManager';
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from '../../index';
 import {TILE_HEIGHT, TILE_WIDTH} from './GameObjects/Tile';
 import EventManager from '../../Runtime/EventManager';
-import {EVENT_ENUM} from '../../Enums';
+import {ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM} from '../../Enums';
 import Player from './GameObjects/Player';
 import WoodenSkeleton from './GameObjects/WoodenSkeleton';
 import PlayerManager from './GameObjects/Player/Scripts/PlayerManager';
@@ -14,36 +14,44 @@ import Door from './GameObjects/Door';
 import DoorManager from './GameObjects/Door/Scripts/DoorManager';
 import IronSkeleton from './GameObjects/IronSkeleton';
 import IronSkeletonManager from './GameObjects/IronSkeleton/Scripts/IronSkeletonManager';
-import Burst from "./GameObjects/Burst";
-import BurstManager from "./GameObjects/Burst/Scripts/BurstManager";
-import Spikes from "./GameObjects/Spikes";
-import SpikesManager from "./GameObjects/Spikes/Scripts/SpikesManager";
+import Burst from './GameObjects/Burst';
+import BurstManager from './GameObjects/Burst/Scripts/BurstManager';
+import Spikes from './GameObjects/Spikes';
+import SpikesManager from './GameObjects/Spikes/Scripts/SpikesManager';
 
 export default class BattleManager extends Component {
   static componentName = 'BattleManager'; // 设置组件的名字
 
+  level: ILevel
+
   init() {
+    DataManager.Instance.levelIndex = 13;
+
     EventManager.Instance.on(EVENT_ENUM.NEXT_LEVEL, this.nextLevel, this)
+    EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.checkArrived, this)
     this.initLevel();
   }
 
-  initLevel() {
-    this.clearLevel();
-    const {levelIndex} = DataManager.Instance;
-    const level = levels[`level${levelIndex}`];
-    DataManager.Instance.mapInfo = level.mapInfo;
-    DataManager.Instance.mapRowCount = level.mapInfo.length;
-    DataManager.Instance.mapColumnCount = level.mapInfo[0].length;
-    this.generateTileMap();
-    this.generateBursts();
-    this.generateDoor();
-    this.generateEnemies();
-    this.generateSpikes();
-    this.generatePlayer();
+  async initLevel() {
+    const level = levels[`level${DataManager.Instance.levelIndex}`]
+    if (level) {
+      await Promise.resolve();
+      this.clearLevel();
+      this.level = level;
+      DataManager.Instance.mapInfo = level.mapInfo;
+      DataManager.Instance.mapRowCount = level.mapInfo.length;
+      DataManager.Instance.mapColumnCount = level.mapInfo[0].length;
+      this.generateTileMap();
+      this.generateBursts();
+      this.generateDoor();
+      this.generateEnemies();
+      this.generateSpikes();
+      this.generatePlayer();
+    }
   }
 
   clearLevel() {
-    this.gameObject.transform.children.forEach(({gameObject}) => {
+    Array.from(this.gameObject.transform.children).forEach(({gameObject}) => {
       gameObject.destroy();
     });
 
@@ -55,38 +63,46 @@ export default class BattleManager extends Component {
     this.adaptPos();
   }
 
-  generateBursts(){
-    const burst = Burst();
-    this.gameObject.addChild(burst);
-    DataManager.Instance.bursts.push(burst.getComponent(BurstManager));
+  generateBursts() {
+    DataManager.Instance.bursts = this.level.bursts.map(item => {
+      const burst = Burst(item);
+      this.gameObject.addChild(burst);
+      return burst.getComponent(BurstManager);
+    })
   }
 
   generateDoor() {
-    const door = Door();
+    const door = Door(this.level.door);
     this.gameObject.addChild(door);
     DataManager.Instance.door = door.getComponent(DoorManager);
   }
 
   generatePlayer() {
-    const player = Player();
+    const player = Player(this.level.player);
     this.gameObject.addChild(player);
     DataManager.Instance.player = player.getComponent(PlayerManager);
   }
 
-  generateSpikes(){
-    const spikes = Spikes();
-    this.gameObject.addChild(spikes);
-    DataManager.Instance.spikes.push(spikes.getComponent(SpikesManager));
+  generateSpikes() {
+    DataManager.Instance.spikes = this.level.spikes.map(item => {
+      const spikes = Spikes(item);
+      this.gameObject.addChild(spikes);
+      return spikes.getComponent(SpikesManager);
+    });
   }
 
   generateEnemies() {
-    const enemy1 = WoodenSkeleton();
-    this.gameObject.addChild(enemy1);
-    DataManager.Instance.enemies.push(enemy1.getComponent(WoodenSkeletonManager));
-
-    const enemy2 = IronSkeleton();
-    this.gameObject.addChild(enemy2);
-    DataManager.Instance.enemies.push(enemy2.getComponent(IronSkeletonManager));
+    DataManager.Instance.enemies = this.level.enemies.map(item => {
+      if (item.type === ENTITY_TYPE_ENUM.SKELETON_WOODEN) {
+        const woodenSkeleton = WoodenSkeleton(item);
+        this.gameObject.addChild(woodenSkeleton);
+        return woodenSkeleton.getComponent(WoodenSkeletonManager)
+      } else if (item.type === ENTITY_TYPE_ENUM.SKELETON_IRON) {
+        const ironSkeleton = IronSkeleton(item);
+        this.gameObject.addChild(ironSkeleton);
+        return ironSkeleton.getComponent(IronSkeletonManager);
+      }
+    });
   }
 
   adaptPos() {
@@ -100,5 +116,13 @@ export default class BattleManager extends Component {
   nextLevel() {
     DataManager.Instance.levelIndex++;
     this.initLevel();
+  }
+
+  checkArrived() {
+    const {player: {x: playerX, y: playerY}, door: {x: doorX, y: doorY, state: doorState}}
+      = DataManager.Instance;
+    if (playerX === doorX && playerY === doorY && doorState === ENTITY_STATE_ENUM.DEATH) {
+      EventManager.Instance.emit(EVENT_ENUM.NEXT_LEVEL);
+    }
   }
 }

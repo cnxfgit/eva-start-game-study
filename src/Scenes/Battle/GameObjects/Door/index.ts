@@ -1,8 +1,9 @@
 import {GameObject} from '@eva/eva.js';
 import {ENTITY_HEIGHT, ENTITY_WIDTH} from '../../../../Base/EntityManager';
 import DoorManager from './Scripts/DoorManager';
+import {IEntity} from "../../../../Levels";
 
-const Door = () => {
+const Door = (param: IEntity) => {
   const door = new GameObject('door', {
     size: {
       width: ENTITY_WIDTH,
@@ -10,7 +11,7 @@ const Door = () => {
     }
   })
 
-  door.addComponent(new DoorManager());
+  door.addComponent(new DoorManager(param));
 
   return door;
 }

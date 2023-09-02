@@ -1,20 +1,17 @@
-import {DIRECTION_ENUM, ENTITY_STATE_ENUM, EVENT_ENUM,} from '../../../../../Enums';
+import {ENTITY_STATE_ENUM, EVENT_ENUM,} from '../../../../../Enums';
 import WoodenSkeletonStateMachine from './WoodenSkeletonStateMachine';
 import EventManager from '../../../../../Runtime/EventManager';
 import DataManager from '../../../../../Runtime/DataManager';
 import EnemyManager from '../../../../../Base/EnemyManager';
+import {IEntity} from '../../../../../Levels';
 
 
 export default class WoodenSkeletonManager extends EnemyManager {
   static componentName = 'WoodenSkeletonManager';
 
-  init() {
+  init(params:IEntity) {
     this.fsm = this.gameObject.addComponent(new WoodenSkeletonStateMachine());
-    super.init();
-    this.x = 7;
-    this.y = 6;
-    this.state = ENTITY_STATE_ENUM.IDLE;
-    this.direction = DIRECTION_ENUM.TOP;
+    super.init(params);
 
     EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.onAttack, this);
   }

@@ -1,8 +1,9 @@
 import {GameObject} from '@eva/eva.js';
 import PlayerManager from './Scripts/PlayerManager';
 import {ENTITY_HEIGHT, ENTITY_WIDTH} from "../../../../Base/EntityManager";
+import {IEntity} from "../../../../Levels";
 
-const Player = () => {
+const Player = (params:IEntity) => {
   const player = new GameObject('player', {
     size: {
       width: ENTITY_WIDTH,
@@ -10,7 +11,7 @@ const Player = () => {
     }
   })
 
-  player.addComponent(new PlayerManager());
+  player.addComponent(new PlayerManager(params));
 
   return player;
 }
