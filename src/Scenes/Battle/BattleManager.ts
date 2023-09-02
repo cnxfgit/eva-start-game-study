@@ -20,12 +20,15 @@ import Spikes from './GameObjects/Spikes';
 import SpikesManager from './GameObjects/Spikes/Scripts/SpikesManager';
 import Smoke from './GameObjects/Smoke';
 import SmokeManager from './GameObjects/Smoke/Scripts/SmokeManager';
-import FaderManager from "../../Runtime/FaderManager";
+import FaderManager from '../../Runtime/FaderManager';
 
 export default class BattleManager extends Component {
   static componentName = 'BattleManager'; // 设置组件的名字
 
-  level: ILevel
+  level: ILevel;
+  isShaking: boolean = false;
+  oldFrame: number = 0;
+  oldPos: { x: number, y: number } = {x: 0, y: 0}
 
   init() {
     DataManager.Instance.levelIndex = 1;
@@ -33,11 +36,45 @@ export default class BattleManager extends Component {
     EventManager.Instance.on(EVENT_ENUM.NEXT_LEVEL, this.nextLevel, this)
     EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.checkArrived, this)
     EventManager.Instance.on(EVENT_ENUM.SHOW_SMOKE, this.generateSmoke, this);
-
+    EventManager.Instance.on(EVENT_ENUM.SCREEN_SHAKE, this.onShake, this);
   }
 
   start() {
     this.initLevel();
+  }
+
+  update() {
+    this.onShakeUpdate();
+  }
+
+  onShake() {
+    if (this.isShaking) {
+      return;
+    }
+    this.oldFrame = DataManager.Instance.frame;
+    this.isShaking = true;
+    const {x, y} = this.gameObject.transform.position;
+    this.oldPos.x = x;
+    this.oldPos.y = y;
+  }
+
+  onShakeUpdate() {
+    if (this.isShaking) {
+      const duration = 200;
+      const curSecond = (DataManager.Instance.frame - this.oldFrame) / 60;
+      const totalSecond = duration / 1000;
+      const amount = 5;
+      const frequency = 12;
+      const offset = amount * Math.sin(frequency * Math.PI * curSecond);
+      if (curSecond < totalSecond) {
+        this.gameObject.transform.position.x = this.oldPos.x - offset;
+        this.gameObject.transform.position.y = this.oldPos.y - offset;
+      } else {
+        this.isShaking = false;
+        this.gameObject.transform.position.x = this.oldPos.x;
+        this.gameObject.transform.position.y = this.oldPos.y;
+      }
+    }
   }
 
   async initLevel() {

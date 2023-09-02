@@ -81,6 +81,7 @@ export default class PlayerManager extends EntityManager {
     }
 
     if (this.willBlock(inputDirection)) {
+      EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE);
       return;
     }
 
