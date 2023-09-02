@@ -131,15 +131,19 @@ export default class PlayerManager extends EntityManager {
     if (inputDirection === CONTROLLER_ENUM.TOP) {
       this.targetY -= 1;
       this.isMoving = true;
+      this.showSmoke();
     } else if (inputDirection === CONTROLLER_ENUM.BOTTOM) {
       this.targetY += 1;
       this.isMoving = true;
+      this.showSmoke();
     } else if (inputDirection === CONTROLLER_ENUM.LEFT) {
       this.targetX -= 1;
       this.isMoving = true;
+      this.showSmoke();
     } else if (inputDirection === CONTROLLER_ENUM.RIGHT) {
       this.targetX += 1;
       this.isMoving = true;
+      this.showSmoke();
     } else if (inputDirection === CONTROLLER_ENUM.TURNLEFT) {
       if (this.direction === DIRECTION_ENUM.TOP) {
         this.direction = DIRECTION_ENUM.LEFT;
@@ -165,6 +169,10 @@ export default class PlayerManager extends EntityManager {
       this.state = ENTITY_STATE_ENUM.TURNRIGHT;
       EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END);
     }
+  }
+
+  showSmoke(){
+    EventManager.Instance.emit(EVENT_ENUM.SHOW_SMOKE, this.x, this.y, this.direction);
   }
 
   willBlock(type: CONTROLLER_ENUM) {

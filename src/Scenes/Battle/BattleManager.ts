@@ -5,7 +5,7 @@ import DataManager from '../../Runtime/DataManager';
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from '../../index';
 import {TILE_HEIGHT, TILE_WIDTH} from './GameObjects/Tile';
 import EventManager from '../../Runtime/EventManager';
-import {ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM} from '../../Enums';
+import {DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM} from '../../Enums';
 import Player from './GameObjects/Player';
 import WoodenSkeleton from './GameObjects/WoodenSkeleton';
 import PlayerManager from './GameObjects/Player/Scripts/PlayerManager';
@@ -18,6 +18,8 @@ import Burst from './GameObjects/Burst';
 import BurstManager from './GameObjects/Burst/Scripts/BurstManager';
 import Spikes from './GameObjects/Spikes';
 import SpikesManager from './GameObjects/Spikes/Scripts/SpikesManager';
+import Smoke from "./GameObjects/Smoke";
+import SmokeManager from "./GameObjects/Smoke/Scripts/SmokeManager";
 
 export default class BattleManager extends Component {
   static componentName = 'BattleManager'; // 设置组件的名字
@@ -29,6 +31,7 @@ export default class BattleManager extends Component {
 
     EventManager.Instance.on(EVENT_ENUM.NEXT_LEVEL, this.nextLevel, this)
     EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.checkArrived, this)
+    EventManager.Instance.on(EVENT_ENUM.SHOW_SMOKE, this.generateSmoke, this);
     this.initLevel();
   }
 
@@ -89,6 +92,28 @@ export default class BattleManager extends Component {
       this.gameObject.addChild(spikes);
       return spikes.getComponent(SpikesManager);
     });
+  }
+
+  generateSmoke(x: number, y: number, direction: DIRECTION_ENUM) {
+    const item = DataManager.Instance.smokes
+      .find(smoke => smoke.state === ENTITY_STATE_ENUM.DEATH);
+    if (item) {
+      item.x = x;
+      item.y = y;
+      item.direction = direction;
+      item.state = ENTITY_STATE_ENUM.IDLE;
+    } else {
+      const smoke = Smoke({
+        x,
+        y,
+        direction,
+        type: ENTITY_TYPE_ENUM.SMOKE,
+        state: ENTITY_STATE_ENUM.IDLE,
+      });
+      this.gameObject.addChild(smoke);
+
+      DataManager.Instance.smokes.push(smoke.getComponent(SmokeManager));
+    }
   }
 
   generateEnemies() {
