@@ -1,7 +1,7 @@
 import {Component} from '@eva/eva.js';
 import TileMap from './GameObjects/TileMap';
 import levels, {ILevel} from '../../Levels';
-import DataManager from '../../Runtime/DataManager';
+import DataManager, {IRecord} from '../../Runtime/DataManager';
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from '../../index';
 import {TILE_HEIGHT, TILE_WIDTH} from './GameObjects/Tile';
 import EventManager from '../../Runtime/EventManager';
@@ -38,6 +38,7 @@ export default class BattleManager extends Component {
     EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.checkArrived, this)
     EventManager.Instance.on(EVENT_ENUM.SHOW_SMOKE, this.generateSmoke, this);
     EventManager.Instance.on(EVENT_ENUM.SCREEN_SHAKE, this.onShake, this);
+    EventManager.Instance.on(EVENT_ENUM.RECORD_STEP, this.record, this);
   }
 
   start() {
@@ -73,9 +74,9 @@ export default class BattleManager extends Component {
           this.gameObject.transform.position.y = this.oldPos.y - offset;
         } else if (this.shakeType === SHAKE_TYPE_ENUM.BOTTOM) {
           this.gameObject.transform.position.y = this.oldPos.y + offset;
-        }else if (this.shakeType === SHAKE_TYPE_ENUM.LEFT) {
+        } else if (this.shakeType === SHAKE_TYPE_ENUM.LEFT) {
           this.gameObject.transform.position.x = this.oldPos.x - offset;
-        }else if (this.shakeType === SHAKE_TYPE_ENUM.RIGHT) {
+        } else if (this.shakeType === SHAKE_TYPE_ENUM.RIGHT) {
           this.gameObject.transform.position.x = this.oldPos.x + offset;
         }
       } else {
@@ -201,5 +202,37 @@ export default class BattleManager extends Component {
     if (playerX === doorX && playerY === doorY && doorState === ENTITY_STATE_ENUM.DEATH) {
       EventManager.Instance.emit(EVENT_ENUM.NEXT_LEVEL);
     }
+  }
+
+  record() {
+    const item: IRecord = {
+      player: {
+        x: DataManager.Instance.player.x,
+        y: DataManager.Instance.player.y,
+        direction: DataManager.Instance.player.direction,
+        type: DataManager.Instance.player.type,
+        state: DataManager.Instance.player.state === ENTITY_STATE_ENUM.IDLE ||
+        DataManager.Instance.player.state === ENTITY_STATE_ENUM.DEATH ||
+        DataManager.Instance.player.state === ENTITY_STATE_ENUM.AIRDEATH
+          ? DataManager.Instance.player.state : ENTITY_STATE_ENUM.IDLE,
+      },
+      door: {
+        x: DataManager.Instance.door.x,
+        y: DataManager.Instance.door.y,
+        direction: DataManager.Instance.door.direction,
+        type: DataManager.Instance.door.type,
+        state: DataManager.Instance.door.state,
+      },
+      enemies: DataManager.Instance.enemies.map(({x, y, state, type, direction}) => {
+        return {x, y, type, direction, state}
+      }),
+      bursts: DataManager.Instance.bursts.map(({x, y, state, type, direction}) => {
+        return {x, y, type, direction, state}
+      }),
+      spikes: DataManager.Instance.spikes.map(({x, y, type, count}) => {
+        return {x, y, type, count}
+      }),
+    };
+    DataManager.Instance.records.push(item);
   }
 }

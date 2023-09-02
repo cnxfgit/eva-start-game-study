@@ -77,6 +77,7 @@ export default class PlayerManager extends EntityManager {
       EventManager.Instance.emit(EVENT_ENUM.ATTACK_ENEMY, id);
       EventManager.Instance.emit(EVENT_ENUM.DOOR_OPEN);
       EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END);
+      EventManager.Instance.emit(EVENT_ENUM.RECORD_STEP);
       return;
     }
 
@@ -162,6 +163,7 @@ export default class PlayerManager extends EntityManager {
   }
 
   move(inputDirection: CONTROLLER_ENUM) {
+    EventManager.Instance.emit(EVENT_ENUM.RECORD_STEP);
     if (inputDirection === CONTROLLER_ENUM.TOP) {
       this.targetY -= 1;
       this.isMoving = true;
