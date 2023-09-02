@@ -16,6 +16,8 @@ import IronSkeleton from './GameObjects/IronSkeleton';
 import IronSkeletonManager from './GameObjects/IronSkeleton/Scripts/IronSkeletonManager';
 import Burst from "./GameObjects/Burst";
 import BurstManager from "./GameObjects/Burst/Scripts/BurstManager";
+import Spikes from "./GameObjects/Spikes";
+import SpikesManager from "./GameObjects/Spikes/Scripts/SpikesManager";
 
 export default class BattleManager extends Component {
   static componentName = 'BattleManager'; // 设置组件的名字
@@ -36,6 +38,7 @@ export default class BattleManager extends Component {
     this.generateBursts();
     this.generateDoor();
     this.generateEnemies();
+    this.generateSpikes();
     this.generatePlayer();
   }
 
@@ -68,6 +71,12 @@ export default class BattleManager extends Component {
     const player = Player();
     this.gameObject.addChild(player);
     DataManager.Instance.player = player.getComponent(PlayerManager);
+  }
+
+  generateSpikes(){
+    const spikes = Spikes();
+    this.gameObject.addChild(spikes);
+    DataManager.Instance.spikes.push(spikes.getComponent(SpikesManager));
   }
 
   generateEnemies() {

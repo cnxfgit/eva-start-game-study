@@ -1215,4 +1215,49 @@ export default [
     },
     preload: true,
   },
+  {
+    name: 'spikes_one_zero',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/spikes/one_zero.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/spikes/one_zero.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'spikes_one_one',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/spikes/one_one.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/spikes/one_one.json',
+      }
+    },
+    preload: true,
+  },
+  {
+    name: 'spikes_one_two',
+    type: RESOURCE_TYPE.SPRITE_ANIMATION,
+    src: {
+      image: {
+        type: 'png',
+        url: './static/assets/spikes/one_two.png',
+      },
+      json: {
+        type: 'json',
+        url: './static/assets/spikes/one_two.json',
+      }
+    },
+    preload: true,
+  },
 ];
