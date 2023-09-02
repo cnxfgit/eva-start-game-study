@@ -24,6 +24,7 @@ export default class DataManager extends Singleton {
   bursts: Array<BurstManager>
   spikes: Array<SpikesManager>
   smokes: Array<SmokeManager>
+  frame: number = 0;
 
   reset(){
     this.player = null;

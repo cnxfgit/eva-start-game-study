@@ -1,8 +1,8 @@
 import {GameObject} from '@eva/eva.js';
 import {ENTITY_HEIGHT, ENTITY_WIDTH} from '../../../../Base/EntityManager';
 import WoodenSkeletonManager from './Scripts/WoodenSkeletonManager';
-import {IEntity} from "../../../../Levels";
-import {Render} from "@eva/plugin-renderer-render";
+import {IEntity} from '../../../../Levels';
+import {Render} from '@eva/plugin-renderer-render';
 
 
 const WoodenSkeleton = (params: IEntity) => {

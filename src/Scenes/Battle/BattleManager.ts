@@ -20,6 +20,7 @@ import Spikes from './GameObjects/Spikes';
 import SpikesManager from './GameObjects/Spikes/Scripts/SpikesManager';
 import Smoke from './GameObjects/Smoke';
 import SmokeManager from './GameObjects/Smoke/Scripts/SmokeManager';
+import FaderManager from "../../Runtime/FaderManager";
 
 export default class BattleManager extends Component {
   static componentName = 'BattleManager'; // 设置组件的名字
@@ -32,13 +33,17 @@ export default class BattleManager extends Component {
     EventManager.Instance.on(EVENT_ENUM.NEXT_LEVEL, this.nextLevel, this)
     EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.checkArrived, this)
     EventManager.Instance.on(EVENT_ENUM.SHOW_SMOKE, this.generateSmoke, this);
+
+  }
+
+  start() {
     this.initLevel();
   }
 
   async initLevel() {
     const level = levels[`level${DataManager.Instance.levelIndex}`]
     if (level) {
-      await Promise.resolve();
+      await FaderManager.Instance.fadeIn();
       this.clearLevel();
       this.level = level;
       DataManager.Instance.mapInfo = level.mapInfo;
@@ -50,6 +55,7 @@ export default class BattleManager extends Component {
       this.generateEnemies();
       this.generateSpikes();
       this.generatePlayer();
+      await FaderManager.Instance.fadeOut();
     }
   }
 

@@ -4,7 +4,8 @@ import BackgroundColor from './GameObjects/BackgroundColor';
 import Footer from './GameObjects/Footer';
 import Controller from './GameObjects/Controller';
 import BattleManager from './BattleManager';
-import {Render} from "@eva/plugin-renderer-render";
+import {Render} from '@eva/plugin-renderer-render';
+import FaderManager from '../../Runtime/FaderManager';
 
 const BattleScene = () => {
   const scene = new Scene('BattleScene', {
@@ -25,6 +26,7 @@ const BattleScene = () => {
 
   scene.addChild(stage);
   scene.addChild(Footer());
+  scene.addChild(FaderManager.Instance.createFader());
 
   return scene;
 }

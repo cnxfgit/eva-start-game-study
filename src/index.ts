@@ -11,6 +11,8 @@ import { GraphicsSystem } from '@eva/plugin-renderer-graphics';
 import { TextSystem } from '@eva/plugin-renderer-text';
 import BattleScene from './Scenes/Battle';
 import {SpriteSystem} from '@eva/plugin-renderer-sprite';
+import FaderManager from './Runtime/FaderManager';
+import DataManager from "./Runtime/DataManager";
 
 export const SCREEN_WIDTH = window.innerWidth;
 export const SCREEN_HEIGHT = window.innerHeight;
@@ -40,4 +42,9 @@ const game = new Game({
 
 game.loadScene({
   scene: BattleScene()
+})
+
+game.ticker.add(() => {
+  DataManager.Instance.frame++;
+  FaderManager.Instance.update();
 })
