@@ -916,21 +916,6 @@ export default [
     preload: true,
   },
   {
-    name: 'door_death',
-    type: RESOURCE_TYPE.SPRITE_ANIMATION,
-    src: {
-      image: {
-        type: 'png',
-        url: './static/assets/door/death.png',
-      },
-      json: {
-        type: 'json',
-        url: './static/assets/door/death.json',
-      }
-    },
-    preload: true,
-  },
-  {
     name: 'ironskeleton_idle_top',
     type: RESOURCE_TYPE.SPRITE_ANIMATION,
     src: {
@@ -991,16 +976,16 @@ export default [
     preload: true,
   },
   {
-    name: 'ironskeleton_death_left',
+    name: 'ironskeleton_death_top',
     type: RESOURCE_TYPE.SPRITE_ANIMATION,
     src: {
       image: {
         type: 'png',
-        url: './static/assets/ironskeleton/death_left.png',
+        url: './static/assets/ironskeleton/death_top.png',
       },
       json: {
         type: 'json',
-        url: './static/assets/ironskeleton/death_left.json',
+        url: './static/assets/ironskeleton/death_top.json',
       }
     },
     preload: true,
@@ -1481,21 +1466,6 @@ export default [
       json: {
         type: 'json',
         url: './static/assets/smoke/idle_right.json',
-      }
-    },
-    preload: true,
-  },
-  {
-    name: 'smoke_idle_left',
-    type: RESOURCE_TYPE.SPRITE_ANIMATION,
-    src: {
-      image: {
-        type: 'png',
-        url: './static/assets/smoke/idle_left.png',
-      },
-      json: {
-        type: 'json',
-        url: './static/assets/smoke/idle_left.json',
       }
     },
     preload: true,

@@ -1,5 +1,5 @@
 import EventManager from '../../../../../Runtime/EventManager';
-import {CONTROLLER_ENUM, DIRECTION_ENUM, ENTITY_STATE_ENUM, EVENT_ENUM,} from '../../../../../Enums';
+import {CONTROLLER_ENUM, DIRECTION_ENUM, ENTITY_STATE_ENUM, EVENT_ENUM, SHAKE_TYPE_ENUM,} from '../../../../../Enums';
 import PlayerStateMachine from './PlayerStateMachine';
 import EntityManager from '../../../../../Base/EntityManager';
 import DataManager from '../../../../../Runtime/DataManager';
@@ -15,7 +15,7 @@ export default class PlayerManager extends EntityManager {
   isMoving: boolean = false;
   readonly speed = 1 / 10;
 
-  init(params:IEntity) {
+  init(params: IEntity) {
     this.fsm = this.gameObject.addComponent(new PlayerStateMachine());
     super.init(params);
 
@@ -81,7 +81,39 @@ export default class PlayerManager extends EntityManager {
     }
 
     if (this.willBlock(inputDirection)) {
-      EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE);
+      if (inputDirection === CONTROLLER_ENUM.TOP) {
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.TOP);
+      } else if (inputDirection === CONTROLLER_ENUM.BOTTOM) {
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.BOTTOM);
+      } else if (inputDirection === CONTROLLER_ENUM.LEFT) {
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.LEFT);
+      } else if (inputDirection === CONTROLLER_ENUM.RIGHT) {
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.RIGHT);
+      } else if (inputDirection === CONTROLLER_ENUM.TURNLEFT &&
+        this.direction === DIRECTION_ENUM.TOP) {
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.LEFT);
+      } else if (inputDirection === CONTROLLER_ENUM.TURNLEFT &&
+        this.direction === DIRECTION_ENUM.BOTTOM) {
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.RIGHT);
+      } else if (inputDirection === CONTROLLER_ENUM.TURNLEFT &&
+        this.direction === DIRECTION_ENUM.LEFT) {
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.BOTTOM);
+      } else if (inputDirection === CONTROLLER_ENUM.TURNLEFT &&
+        this.direction === DIRECTION_ENUM.RIGHT) {
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.TOP);
+      } else if (inputDirection === CONTROLLER_ENUM.TURNRIGHT &&
+        this.direction === DIRECTION_ENUM.TOP) {
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.RIGHT);
+      } else if (inputDirection === CONTROLLER_ENUM.TURNRIGHT &&
+        this.direction === DIRECTION_ENUM.BOTTOM) {
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.LEFT);
+      } else if (inputDirection === CONTROLLER_ENUM.TURNRIGHT &&
+        this.direction === DIRECTION_ENUM.LEFT) {
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.TOP);
+      } else if (inputDirection === CONTROLLER_ENUM.TURNRIGHT &&
+        this.direction === DIRECTION_ENUM.RIGHT) {
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.BOTTOM);
+      }
       return;
     }
 
@@ -94,7 +126,7 @@ export default class PlayerManager extends EntityManager {
     );
     for (let i = 0; i < enemies.length; i++) {
       const enemy = enemies[i];
-      const { x: enemyX, y: enemyY, id: enemyId } = enemy;
+      const {x: enemyX, y: enemyY, id: enemyId} = enemy;
       if (
         this.direction === DIRECTION_ENUM.TOP &&
         inputDirection === CONTROLLER_ENUM.TOP &&
@@ -173,22 +205,22 @@ export default class PlayerManager extends EntityManager {
     }
   }
 
-  showSmoke(direction: DIRECTION_ENUM){
+  showSmoke(direction: DIRECTION_ENUM) {
     EventManager.Instance.emit(EVENT_ENUM.SHOW_SMOKE, this.x, this.y, direction);
   }
 
   willBlock(type: CONTROLLER_ENUM) {
-    const { targetX: x, targetY: y, direction } = this;
-    const { tileInfo: tileInfo } = DataManager.Instance;
+    const {targetX: x, targetY: y, direction} = this;
+    const {tileInfo: tileInfo} = DataManager.Instance;
     const enemies: EnemyManager[] = DataManager.Instance.enemies.filter(
       (enemy: EnemyManager) => enemy.state !== ENTITY_STATE_ENUM.DEATH,
     );
-    const { x: doorX, y: doorY, state: doorState } = DataManager.Instance.door;
+    const {x: doorX, y: doorY, state: doorState} = DataManager.Instance.door;
     const bursts: BurstManager[] = DataManager.Instance.bursts.filter(
       (burst: BurstManager) => burst.state !== ENTITY_STATE_ENUM.DEATH,
     );
 
-    const { mapRowCount: row, mapColumnCount: column } = DataManager.Instance;
+    const {mapRowCount: row, mapColumnCount: column} = DataManager.Instance;
 
     //按钮方向——向上
     if (type === CONTROLLER_ENUM.TOP) {
@@ -218,7 +250,7 @@ export default class PlayerManager extends EntityManager {
         //判断敌人
         for (let i = 0; i < enemies.length; i++) {
           const enemy = enemies[i];
-          const { x: enemyX, y: enemyY } = enemy;
+          const {x: enemyX, y: enemyY} = enemy;
 
           if ((enemyX === x && enemyY === weaponNextY) || (enemyX === x && enemyY === playerNextY)) {
             this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
@@ -266,7 +298,7 @@ export default class PlayerManager extends EntityManager {
         //判断敌人
         for (let i = 0; i < enemies.length; i++) {
           const enemy = enemies[i];
-          const { x: enemyX, y: enemyY } = enemy;
+          const {x: enemyX, y: enemyY} = enemy;
 
           if (enemyX === x && enemyY === playerNextY) {
             this.state = ENTITY_STATE_ENUM.BLOCKBACK;
@@ -315,7 +347,7 @@ export default class PlayerManager extends EntityManager {
         //判断敌人
         for (let i = 0; i < enemies.length; i++) {
           const enemy = enemies[i];
-          const { x: enemyX, y: enemyY } = enemy;
+          const {x: enemyX, y: enemyY} = enemy;
 
           if ((enemyX === x && enemyY === playerNextY) || (enemyX === weaponNextX && enemyY === weaponNextY)) {
             this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
@@ -364,7 +396,7 @@ export default class PlayerManager extends EntityManager {
         //判断敌人
         for (let i = 0; i < enemies.length; i++) {
           const enemy = enemies[i];
-          const { x: enemyX, y: enemyY } = enemy;
+          const {x: enemyX, y: enemyY} = enemy;
 
           if ((enemyX === x && enemyY === playerNextY) || (enemyX === weaponNextX && enemyY === weaponNextY)) {
             this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
@@ -417,7 +449,7 @@ export default class PlayerManager extends EntityManager {
         //判断敌人
         for (let i = 0; i < enemies.length; i++) {
           const enemy = enemies[i];
-          const { x: enemyX, y: enemyY } = enemy;
+          const {x: enemyX, y: enemyY} = enemy;
 
           if (enemyX === x && enemyY === playerNextY) {
             this.state = ENTITY_STATE_ENUM.BLOCKBACK;
@@ -465,7 +497,7 @@ export default class PlayerManager extends EntityManager {
         //判断敌人
         for (let i = 0; i < enemies.length; i++) {
           const enemy = enemies[i];
-          const { x: enemyX, y: enemyY } = enemy;
+          const {x: enemyX, y: enemyY} = enemy;
 
           if ((enemyX === x && enemyY === weaponNextY) || (enemyX === x && enemyY === playerNextY)) {
             this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
@@ -514,7 +546,7 @@ export default class PlayerManager extends EntityManager {
         //判断敌人
         for (let i = 0; i < enemies.length; i++) {
           const enemy = enemies[i];
-          const { x: enemyX, y: enemyY } = enemy;
+          const {x: enemyX, y: enemyY} = enemy;
 
           if ((enemyX === x && enemyY === playerNextY) || (enemyX === weaponNextX && enemyY === weaponNextY)) {
             this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
@@ -563,7 +595,7 @@ export default class PlayerManager extends EntityManager {
         //判断敌人
         for (let i = 0; i < enemies.length; i++) {
           const enemy = enemies[i];
-          const { x: enemyX, y: enemyY } = enemy;
+          const {x: enemyX, y: enemyY} = enemy;
 
           if ((enemyX === x && enemyY === playerNextY) || (enemyX === weaponNextX && enemyY === weaponNextY)) {
             this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
@@ -618,7 +650,7 @@ export default class PlayerManager extends EntityManager {
         //判断敌人
         for (let i = 0; i < enemies.length; i++) {
           const enemy = enemies[i];
-          const { x: enemyX, y: enemyY } = enemy;
+          const {x: enemyX, y: enemyY} = enemy;
 
           if ((enemyX === playerNextX && enemyY === y) || (enemyX === weaponNextX && enemyY === weaponNextY)) {
             this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
@@ -668,7 +700,7 @@ export default class PlayerManager extends EntityManager {
         //判断敌人
         for (let i = 0; i < enemies.length; i++) {
           const enemy = enemies[i];
-          const { x: enemyX, y: enemyY } = enemy;
+          const {x: enemyX, y: enemyY} = enemy;
 
           if ((enemyX === playerNextX && enemyY === y) || (enemyX === weaponNextX && enemyY === weaponNextY)) {
             this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
@@ -717,7 +749,7 @@ export default class PlayerManager extends EntityManager {
         //判断敌人
         for (let i = 0; i < enemies.length; i++) {
           const enemy = enemies[i];
-          const { x: enemyX, y: enemyY } = enemy;
+          const {x: enemyX, y: enemyY} = enemy;
 
           if ((enemyX === playerNextX && enemyY === y) || (enemyX === weaponNextX && enemyY === y)) {
             this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
@@ -766,7 +798,7 @@ export default class PlayerManager extends EntityManager {
         //判断敌人
         for (let i = 0; i < enemies.length; i++) {
           const enemy = enemies[i];
-          const { x: enemyX, y: enemyY } = enemy;
+          const {x: enemyX, y: enemyY} = enemy;
 
           if (enemyX === playerNextX && enemyY === y) {
             this.state = ENTITY_STATE_ENUM.BLOCKBACK;
@@ -819,7 +851,7 @@ export default class PlayerManager extends EntityManager {
         //判断敌人
         for (let i = 0; i < enemies.length; i++) {
           const enemy = enemies[i];
-          const { x: enemyX, y: enemyY } = enemy;
+          const {x: enemyX, y: enemyY} = enemy;
 
           if ((enemyX === playerNextX && enemyY === y) || (enemyX === weaponNextX && enemyY === weaponNextY)) {
             this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
@@ -869,7 +901,7 @@ export default class PlayerManager extends EntityManager {
         //判断敌人
         for (let i = 0; i < enemies.length; i++) {
           const enemy = enemies[i];
-          const { x: enemyX, y: enemyY } = enemy;
+          const {x: enemyX, y: enemyY} = enemy;
 
           if ((enemyX === playerNextX && enemyY === y) || (enemyX === weaponNextX && enemyY === weaponNextY)) {
             this.state = ENTITY_STATE_ENUM.BLOCKLEFT;
@@ -917,7 +949,7 @@ export default class PlayerManager extends EntityManager {
         //判断敌人
         for (let i = 0; i < enemies.length; i++) {
           const enemy = enemies[i];
-          const { x: enemyX, y: enemyY } = enemy;
+          const {x: enemyX, y: enemyY} = enemy;
 
           if (enemyX === playerNextX && enemyY === y) {
             this.state = ENTITY_STATE_ENUM.BLOCKBACK;
@@ -965,7 +997,7 @@ export default class PlayerManager extends EntityManager {
         //判断敌人
         for (let i = 0; i < enemies.length; i++) {
           const enemy = enemies[i];
-          const { x: enemyX, y: enemyY } = enemy;
+          const {x: enemyX, y: enemyY} = enemy;
 
           if ((enemyX === playerNextX && enemyY === y) || (enemyX === weaponNextX && enemyY === y)) {
             this.state = ENTITY_STATE_ENUM.BLOCKFRONT;
@@ -1022,7 +1054,7 @@ export default class PlayerManager extends EntityManager {
       //判断敌人
       for (let i = 0; i < enemies.length; i++) {
         const enemy = enemies[i];
-        const { x: enemyX, y: enemyY } = enemy;
+        const {x: enemyX, y: enemyY} = enemy;
 
         if (enemyX === nextX && enemyY === y) {
           this.state = ENTITY_STATE_ENUM.BLOCKTURNLEFT;
@@ -1083,7 +1115,7 @@ export default class PlayerManager extends EntityManager {
       //判断敌人
       for (let i = 0; i < enemies.length; i++) {
         const enemy = enemies[i];
-        const { x: enemyX, y: enemyY } = enemy;
+        const {x: enemyX, y: enemyY} = enemy;
 
         if (enemyX === nextX && enemyY === y) {
           this.state = ENTITY_STATE_ENUM.BLOCKTURNRIGHT;

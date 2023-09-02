@@ -5,7 +5,7 @@ import DataManager from '../../Runtime/DataManager';
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from '../../index';
 import {TILE_HEIGHT, TILE_WIDTH} from './GameObjects/Tile';
 import EventManager from '../../Runtime/EventManager';
-import {DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM} from '../../Enums';
+import {DIRECTION_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM, SHAKE_TYPE_ENUM} from '../../Enums';
 import Player from './GameObjects/Player';
 import WoodenSkeleton from './GameObjects/WoodenSkeleton';
 import PlayerManager from './GameObjects/Player/Scripts/PlayerManager';
@@ -29,6 +29,7 @@ export default class BattleManager extends Component {
   isShaking: boolean = false;
   oldFrame: number = 0;
   oldPos: { x: number, y: number } = {x: 0, y: 0}
+  shakeType: SHAKE_TYPE_ENUM;
 
   init() {
     DataManager.Instance.levelIndex = 1;
@@ -47,7 +48,7 @@ export default class BattleManager extends Component {
     this.onShakeUpdate();
   }
 
-  onShake() {
+  onShake(shakeType: SHAKE_TYPE_ENUM) {
     if (this.isShaking) {
       return;
     }
@@ -56,6 +57,7 @@ export default class BattleManager extends Component {
     const {x, y} = this.gameObject.transform.position;
     this.oldPos.x = x;
     this.oldPos.y = y;
+    this.shakeType = shakeType;
   }
 
   onShakeUpdate() {
@@ -63,12 +65,19 @@ export default class BattleManager extends Component {
       const duration = 200;
       const curSecond = (DataManager.Instance.frame - this.oldFrame) / 60;
       const totalSecond = duration / 1000;
-      const amount = 5;
+      const amount = 1.6;
       const frequency = 12;
       const offset = amount * Math.sin(frequency * Math.PI * curSecond);
       if (curSecond < totalSecond) {
-        this.gameObject.transform.position.x = this.oldPos.x - offset;
-        this.gameObject.transform.position.y = this.oldPos.y - offset;
+        if (this.shakeType === SHAKE_TYPE_ENUM.TOP) {
+          this.gameObject.transform.position.y = this.oldPos.y - offset;
+        } else if (this.shakeType === SHAKE_TYPE_ENUM.BOTTOM) {
+          this.gameObject.transform.position.y = this.oldPos.y + offset;
+        }else if (this.shakeType === SHAKE_TYPE_ENUM.LEFT) {
+          this.gameObject.transform.position.x = this.oldPos.x - offset;
+        }else if (this.shakeType === SHAKE_TYPE_ENUM.RIGHT) {
+          this.gameObject.transform.position.x = this.oldPos.x + offset;
+        }
       } else {
         this.isShaking = false;
         this.gameObject.transform.position.x = this.oldPos.x;
