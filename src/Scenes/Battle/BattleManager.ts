@@ -18,8 +18,8 @@ import Burst from './GameObjects/Burst';
 import BurstManager from './GameObjects/Burst/Scripts/BurstManager';
 import Spikes from './GameObjects/Spikes';
 import SpikesManager from './GameObjects/Spikes/Scripts/SpikesManager';
-import Smoke from "./GameObjects/Smoke";
-import SmokeManager from "./GameObjects/Smoke/Scripts/SmokeManager";
+import Smoke from './GameObjects/Smoke';
+import SmokeManager from './GameObjects/Smoke/Scripts/SmokeManager';
 
 export default class BattleManager extends Component {
   static componentName = 'BattleManager'; // 设置组件的名字
@@ -27,7 +27,7 @@ export default class BattleManager extends Component {
   level: ILevel
 
   init() {
-    DataManager.Instance.levelIndex = 13;
+    DataManager.Instance.levelIndex = 1;
 
     EventManager.Instance.on(EVENT_ENUM.NEXT_LEVEL, this.nextLevel, this)
     EventManager.Instance.on(EVENT_ENUM.PLAYER_MOVE_END, this.checkArrived, this)

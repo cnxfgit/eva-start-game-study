@@ -4,6 +4,7 @@ import BackgroundColor from './GameObjects/BackgroundColor';
 import Footer from './GameObjects/Footer';
 import Controller from './GameObjects/Controller';
 import BattleManager from './BattleManager';
+import {Render} from "@eva/plugin-renderer-render";
 
 const BattleScene = () => {
   const scene = new Scene('BattleScene', {
@@ -17,6 +18,9 @@ const BattleScene = () => {
   scene.addChild(Controller());
 
   const stage = new GameObject('stage');
+  stage.addComponent(new Render({
+    sortableChildren: true,
+  }));
   stage.addComponent(new BattleManager());
 
   scene.addChild(stage);

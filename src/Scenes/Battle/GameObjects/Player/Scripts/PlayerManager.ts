@@ -76,6 +76,7 @@ export default class PlayerManager extends EntityManager {
       this.state = ENTITY_STATE_ENUM.ATTACK;
       EventManager.Instance.emit(EVENT_ENUM.ATTACK_ENEMY, id);
       EventManager.Instance.emit(EVENT_ENUM.DOOR_OPEN);
+      EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END);
       return;
     }
 
@@ -131,19 +132,19 @@ export default class PlayerManager extends EntityManager {
     if (inputDirection === CONTROLLER_ENUM.TOP) {
       this.targetY -= 1;
       this.isMoving = true;
-      this.showSmoke();
+      this.showSmoke(DIRECTION_ENUM.TOP);
     } else if (inputDirection === CONTROLLER_ENUM.BOTTOM) {
       this.targetY += 1;
       this.isMoving = true;
-      this.showSmoke();
+      this.showSmoke(DIRECTION_ENUM.BOTTOM);
     } else if (inputDirection === CONTROLLER_ENUM.LEFT) {
       this.targetX -= 1;
       this.isMoving = true;
-      this.showSmoke();
+      this.showSmoke(DIRECTION_ENUM.LEFT);
     } else if (inputDirection === CONTROLLER_ENUM.RIGHT) {
       this.targetX += 1;
       this.isMoving = true;
-      this.showSmoke();
+      this.showSmoke(DIRECTION_ENUM.RIGHT);
     } else if (inputDirection === CONTROLLER_ENUM.TURNLEFT) {
       if (this.direction === DIRECTION_ENUM.TOP) {
         this.direction = DIRECTION_ENUM.LEFT;
@@ -171,8 +172,8 @@ export default class PlayerManager extends EntityManager {
     }
   }
 
-  showSmoke(){
-    EventManager.Instance.emit(EVENT_ENUM.SHOW_SMOKE, this.x, this.y, this.direction);
+  showSmoke(direction: DIRECTION_ENUM){
+    EventManager.Instance.emit(EVENT_ENUM.SHOW_SMOKE, this.x, this.y, direction);
   }
 
   willBlock(type: CONTROLLER_ENUM) {
