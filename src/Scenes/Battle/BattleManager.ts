@@ -39,6 +39,7 @@ export default class BattleManager extends Component {
     EventManager.Instance.on(EVENT_ENUM.SHOW_SMOKE, this.generateSmoke, this);
     EventManager.Instance.on(EVENT_ENUM.SCREEN_SHAKE, this.onShake, this);
     EventManager.Instance.on(EVENT_ENUM.RECORD_STEP, this.record, this);
+    EventManager.Instance.on(EVENT_ENUM.REVOKE_STEP, this.revoke, this);
   }
 
   start() {
@@ -234,5 +235,46 @@ export default class BattleManager extends Component {
       }),
     };
     DataManager.Instance.records.push(item);
+  }
+
+  revoke() {
+    const record = DataManager.Instance.records.pop()
+    if (record) {
+      const {player, spikes, enemies, door, bursts} = record;
+      DataManager.Instance.player.x = player.x;
+      DataManager.Instance.player.y = player.y;
+      DataManager.Instance.player.targetX = player.x;
+      DataManager.Instance.player.targetY = player.y;
+      DataManager.Instance.player.state = player.state;
+      DataManager.Instance.player.direction = player.direction;
+
+      DataManager.Instance.door.x = door.x;
+      DataManager.Instance.door.y = door.y;
+      DataManager.Instance.door.state = door.state;
+      DataManager.Instance.door.direction = door.direction;
+
+      for (let i = 0; i < enemies.length; i++) {
+        const enemy = enemies[i];
+        DataManager.Instance.enemies[i].x = enemy.x;
+        DataManager.Instance.enemies[i].y = enemy.y;
+        DataManager.Instance.enemies[i].state = enemy.state;
+        DataManager.Instance.enemies[i].direction = enemy.direction;
+      }
+
+      for (let i = 0; i < bursts.length; i++) {
+        const burst = bursts[i];
+        DataManager.Instance.bursts[i].x = burst.x;
+        DataManager.Instance.bursts[i].y = burst.y;
+        DataManager.Instance.bursts[i].state = burst.state;
+        DataManager.Instance.bursts[i].direction = burst.direction;
+      }
+
+      for (let i = 0; i < spikes.length; i++) {
+        const item = spikes[i];
+        DataManager.Instance.spikes[i].x = item.x;
+        DataManager.Instance.spikes[i].y = item.y;
+        DataManager.Instance.spikes[i].count = item.count;
+      }
+    }
   }
 }

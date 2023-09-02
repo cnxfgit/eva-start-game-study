@@ -6,6 +6,7 @@ import Controller from './GameObjects/Controller';
 import BattleManager from './BattleManager';
 import {Render} from '@eva/plugin-renderer-render';
 import FaderManager from '../../Runtime/FaderManager';
+import Menu from "./GameObjects/Menu";
 
 const BattleScene = () => {
   const scene = new Scene('BattleScene', {
@@ -17,6 +18,7 @@ const BattleScene = () => {
 
   scene.addChild(BackgroundColor());
   scene.addChild(Controller());
+  scene.addChild(Menu());
 
   const stage = new GameObject('stage');
   stage.addComponent(new Render({
